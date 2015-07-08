@@ -1,3 +1,4 @@
+from datetime import datetime
 from PyQt4.QtGui import QColor
 from Model.game_map import GameMap
 from Model.light import LightImpulse
@@ -22,10 +23,11 @@ def parse_arguments():
 
 class MockState:
     def __init__(self):
-        pass
+        self.start_time = datetime.now()
 
     def get_normal_light(self):
-        return 30
+        delta = datetime.now() - self.start_time
+        return (delta.seconds % 51) * 5 + 1
 
 
 class MapTest(QtGui.QWidget):
@@ -34,30 +36,18 @@ class MapTest(QtGui.QWidget):
 
     def __init__(self):
         super().__init__()
-        self.setFixedSize(600, 600)
-        self.map = GameMap(30, 30, MockState())
-        self.map.initialize_from_file('map2.txt')
+        self.setFixedSize(800, 800)
+        self.map = GameMap(10, 10, MockState())
+        self.map.initialize_from_file('map1.txt')
         self.timer = QtCore.QBasicTimer()
         self.timer.start(MapTest.interval, self)
 
     def timerEvent(self, e):
-        logging.debug('Start tick!')
-        for x in range(self.map.height):
-            logging.debug(' '.join([str(y.lighting.value) for y in self.map.map[x]]))
-
-        for x in range(self.map.height):
-            for y in range(self.map.width):
-                self.map.map[x][y].start_tick()
-        for x in range(self.map.height):
-            for y in range(self.map.width):
-                self.map.map[x][y].tick(MapTest.interval / 1000)
-        for x in range(self.map.height):
-            for y in range(self.map.width):
-                self.map.map[x][y].end_tick()
+        self.map.tick(MapTest.interval / 1000)
         self.repaint()
 
     def mousePressEvent(self, e):
-        size = 15
+        size = 30
         x = e.x() // size
         y = e.y() // size
         print('press', x, y)
@@ -68,10 +58,11 @@ class MapTest(QtGui.QWidget):
     def paintEvent(self, e):
         qp = QtGui.QPainter()
         qp.begin(self)
-        size = 15
+        size = 30
         for x in range(self.map.height):
             for y in range(self.map.width):
                 value = int(self.map.map[x][y].lighting.value)
+
                 qp.fillRect(x * size, y * size, size, size, QColor.fromRgb(value, value, value))
                 qp.drawRect(x * size, y * size, size, size)
 

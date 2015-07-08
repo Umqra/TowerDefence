@@ -17,6 +17,9 @@ class GameState:
         self.views = []
         self.time = time
 
+    def tick(self, dt):
+        self.map.tick(dt)
+
     def add_view(self, view):
         self.views.append(view)
 
