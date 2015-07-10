@@ -1,5 +1,10 @@
 from datetime import datetime
 from PyQt4.QtGui import QColor
+import math
+from Geometry.line import Line
+from Geometry.point import Point
+from Geometry.polygon import Polygon
+from Geometry.segment import Segment
 from Model.game_map import GameMap
 from Model.light import LightImpulse
 
@@ -69,6 +74,15 @@ class MapTest(QtGui.QWidget):
 
 def main():
     args = parse_arguments()
+    A = Point(1, 0)
+    B = Point(4, 3)
+    C = Point(5, 6)
+    D = Point(-1, 100)
+    p = Polygon([A, B, C, D])
+    print(p)
+    p.rotate_around_origin(math.pi / 2)
+    print(p)
+    return
 
     app = QtGui.QApplication(sys.argv)
     widget = MapTest()

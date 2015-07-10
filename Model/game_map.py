@@ -82,7 +82,9 @@ class GameMap:
 
         for x in range(self.height):
             for y in range(self.width):
-                self.events += self.map[x][y].tick(dt)
+                new_events = self.map[x][y].tick(dt)
+                if new_events is not None:
+                    self.events += new_events
 
         self.process_events()
 
