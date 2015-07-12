@@ -185,6 +185,11 @@ class TestSegmentMethods(unittest.TestCase):
         self.assertTrue(equal(0, Segment(A, B).dist_from_point(P2)))
         self.assertTrue(equal(math.sqrt(2), Segment(A, B).dist_from_point(P3)))
 
+    def test_center(self):
+        A, B = Point(1, 2), Point(-2, 5)
+        s = Segment(A, B)
+        self.assertEqual(Point(-0.5, 3.5), s.center)
+
 
 class TestPolygonMethods(unittest.TestCase):
     def get_sample_polygon_1(self):
@@ -221,6 +226,14 @@ class TestPolygonMethods(unittest.TestCase):
             Point(5, -5),
             Point(5, 3),
             Point(4, 3)
+        ])
+
+    def get_sample_polygon_5(self):
+        return Polygon([
+            Point(3, 6),
+            Point(5, 8),
+            Point(9, 8),
+            Point(7, 6)
         ])
 
     def test_contain_points(self):
@@ -265,6 +278,18 @@ class TestPolygonMethods(unittest.TestCase):
         self.assertTrue(equal(0, polygon.distance_from_point(P1)))
         self.assertTrue(equal(math.sqrt(4 / 13), polygon.distance_from_point(P2)))
         self.assertTrue(equal(1, polygon.distance_from_point(P3)))
+
+    def test_center_of_mass(self):
+        polygon2 = self.get_sample_polygon_2()
+        polygon5 = self.get_sample_polygon_5()
+        self.assertEqual(Point(4.5, 4.5), polygon2.get_center_of_mass())
+        self.assertEqual(Point(6, 7), polygon5.get_center_of_mass())
+
+    def test_bounding_box(self):
+        polygon2 = self.get_sample_polygon_2()
+        polygon5 = self.get_sample_polygon_5()
+        self.assertEqual((Point(4, 4), Point(5, 5)), polygon2.get_bounding_box())
+        self.assertEqual((Point(3, 6), Point(9, 8)), polygon5.get_bounding_box())
 
 if __name__ == "__main__":
     unittest.main()

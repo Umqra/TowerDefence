@@ -4,7 +4,7 @@ from Model.light import Lighting
 
 class MapCell:
     directions = [(-1, 0), (1, 0), (0, 1), (0, -1)]
-    cell_size = 10
+    cell_size = 30
 
     def __init__(self, state, x, y, passable, lighting=None, adjacent=None):
         self.state = state

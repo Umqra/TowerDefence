@@ -92,23 +92,22 @@ class Polygon:
             distance = min(distance, s.dist_from_point(P))
         return distance
 
-    # TODO: unittest covering
     def get_bounding_box(self):
         minX, minY = self.shape[0].x, self.shape[0].y
         maxX, maxY = self.shape[0].x, self.shape[0].y
         for p in self.shape:
             minX = min(minX, p.x)
             maxX = max(maxX, p.x)
+
             minY = min(minY, p.y)
             maxY = max(maxY, p.y)
         return Point(minX, minY), Point(maxX, maxY)
 
-    # TODO: unittest covering
     def get_center_of_mass(self):
         sum_length = 0
         center_of_mass = Point()
         for side in self.get_side_segments():
-            center_of_mass += side.center
+            center_of_mass += side.center * side.length
             sum_length += side.length
         return center_of_mass / sum_length
 
@@ -117,3 +116,41 @@ class Polygon:
 
     def __str__(self):
         return str(self.shape)
+
+
+class ConvexPolygon(Polygon):
+    def __init__(self, shape):
+        super().__init__(shape)
+
+    def ccw_order_start_with_point(self, p):
+        pos = self.shape.index(p)
+        return self.ccw_order_start_with_index(pos)
+
+    def ccw_order_start_with_index(self, pos):
+        count_vertices = len(self.shape)
+        direction = 1
+        if less((self.shape[1] - self.shape[0]).cross_product(self.shape[2] - self.shape[0]), 0):
+            direction = -1
+        for i in range(count_vertices):
+            yield self.shape[pos]
+            pos = (pos + direction) % count_vertices
+
+    def get_index_of_vertex(self, better):
+        pos = 0
+        count_vertices = len(self.shape)
+        for i in range(1, count_vertices):
+            if better(self.shape[i], self.shape[pos]):
+                pos = i
+        return pos
+
+    def get_index_of_left_bottom(self):
+        return self.get_index_of_vertex(lambda p1, p2: p1.x <= p2.x or (p1.x == p2.x and p1.y <= p2.y))
+
+    def intersects_with_convex_polygon(self, other):
+        pass
+
+
+    def intersects_with_polygon(self, other):
+        if isinstance(other, ConvexPolygon):
+            return self.intersects_with_convex_polygon(other)
+        return other.intersects_with_polygon(self)

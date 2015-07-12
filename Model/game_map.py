@@ -86,11 +86,20 @@ class GameMap:
     def add_tower(self, tower):
         self.towers.append(tower)
 
+    def delete_tower(self, tower):
+        self.towers.remove(tower)
+
     def add_warrior(self, warrior):
         self.warriors.append(warrior)
 
+    def delete_warrior(self, warrior):
+        self.warriors.remove(warrior)
+
     def add_bullet(self, bullet):
         self.bullets.append(bullet)
+
+    def delete_bullet(self, bullet):
+        self.bullets.remove(bullet)
 
     def tick_init(self, dt):
         for row in range(self.height):
@@ -103,12 +112,13 @@ class GameMap:
         self.tick_init(dt)
         self.events.clear()
         for item in itertools.chain(self.warriors, self.towers, self.bullets):
+            item.tick_init(dt)
             self.assign_cells(item)
 
         for item in itertools.chain(self.warriors, self.towers, self.bullets):
             new_events = item.tick(dt)
             if new_events is not None:
-                self.events.append(new_events)
+                self.events += new_events
 
         for x in range(self.height):
             for y in range(self.width):
@@ -125,11 +135,12 @@ class GameMap:
         x_r = min(int(bounding_box[1].x // MapCell.cell_size) + 1, self.height)
         y_l = max(int(bounding_box[0].y // MapCell.cell_size), 0)
         y_r = min(int(bounding_box[1].y // MapCell.cell_size) + 1, self.width)
+
         for row in range(x_l, x_r):
             for col in range(y_l, y_r):
                 cell_polygon = self.get_cell_shape(row, col)
                 if cell_polygon.intersects_with_polygon(shape):
-                    item.add_cell((row, col))
+                    item.add_cell(self.map[row][col])
                     self.map[row][col].add_item(item)
 
     def process_events(self):

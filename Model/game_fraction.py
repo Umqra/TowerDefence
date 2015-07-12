@@ -8,10 +8,12 @@ class GameFraction(Enum):
     Dark = "Dark"
     Neutral = "Neutral"
 
-warred_fractions = set(
-    (GameFraction.Light, GameFraction.Dark)
+
+warred_fractions = {
+    (GameFraction.Light, GameFraction.Dark),
     (GameFraction.Neutral, GameFraction.Dark)
-)
+}
+
 
 def is_warred_fractions(first, second):
     return ((first, second) in warred_fractions or
