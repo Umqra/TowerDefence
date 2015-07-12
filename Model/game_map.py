@@ -1,3 +1,6 @@
+from Geometry.point import Point
+from Geometry.polygon import Polygon
+
 __author__ = 'umqra'
 import re
 import logging
@@ -23,7 +26,9 @@ class GameMap:
 
         self.towers = []
         self.warriors = []
+        self.bullets = []
         self.spells = []
+
         self.map = [[None for _ in range(width)] for _ in range(height)]
 
         self.events = []
@@ -58,6 +63,18 @@ class GameMap:
                     if 0 <= nx < self.height and 0 <= ny < self.width:
                         self.map[x][y].add_adjacent(self.map[nx][ny])
 
+    def get_cell_shape(self, row, col):
+        size = MapCell.cell_size
+        center = Point(size * row + size / 2, size * col + size / 2)
+        v = Point(size / 2, size / 2)
+        u = Point(size / 2, -size / 2)
+        return Polygon([
+            center - v,
+            center + u,
+            center + v,
+            center - u
+        ])
+
     def set_state(self, state):
         logging.info('Setting new state from map')
         self.state = state
@@ -72,13 +89,26 @@ class GameMap:
     def add_warrior(self, warrior):
         self.warriors.append(warrior)
 
-    def tick(self, dt):
-        self.events.clear()
+    def add_bullet(self, bullet):
+        self.bullets.append(bullet)
+
+    def tick_init(self, dt):
+        for row in range(self.height):
+            for col in range(self.width):
+                self.map[row][col].tick_init(dt)
         for item in itertools.chain(self.warriors, self.towers):
+            item.tick_init(dt)
+
+    def tick(self, dt):
+        self.tick_init(dt)
+        self.events.clear()
+        for item in itertools.chain(self.warriors, self.towers, self.bullets):
             self.assign_cells(item)
 
-        for item in itertools.chain(self.warriors, self.towers):
-            self.events += item.tick(dt)
+        for item in itertools.chain(self.warriors, self.towers, self.bullets):
+            new_events = item.tick(dt)
+            if new_events is not None:
+                self.events.append(new_events)
 
         for x in range(self.height):
             for y in range(self.width):
@@ -89,7 +119,19 @@ class GameMap:
         self.process_events()
 
     def assign_cells(self, item):
-        pass
+        shape = item.shape
+        bounding_box = shape.get_bounding_box()
+        x_l = max(int(bounding_box[0].x // MapCell.cell_size), 0)
+        x_r = min(int(bounding_box[1].x // MapCell.cell_size) + 1, self.height)
+        y_l = max(int(bounding_box[0].y // MapCell.cell_size), 0)
+        y_r = min(int(bounding_box[1].y // MapCell.cell_size) + 1, self.width)
+        for row in range(x_l, x_r):
+            for col in range(y_l, y_r):
+                cell_polygon = self.get_cell_shape(row, col)
+                if cell_polygon.intersects_with_polygon(shape):
+                    item.add_cell((row, col))
+                    self.map[row][col].add_item(item)
 
     def process_events(self):
-        pass
+        for event in self.events:
+            event.process(self)

@@ -26,6 +26,10 @@ class Segment:
     def based_line(self):
         return Line(self.A, self.B)
 
+    @property
+    def center(self):
+        return (self.A + self.B) / 2
+
     def contain_point(self, P: Point):
         return (self.based_line.contain_point(P) and
                 less_or_equal((P - self.A).dot_product(P - self.B), 0))

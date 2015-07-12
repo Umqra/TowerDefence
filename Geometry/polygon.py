@@ -49,9 +49,9 @@ class Polygon:
                 return True
             intersection = l.intersect_with_line(Line(P, P + Point(1, 0)))
             if (intersection is not None and
-                side.contain_point(intersection) and
-                greater(intersection.x, P.x) and
-                intersection != bottom_point):
+                    side.contain_point(intersection) and
+                    greater(intersection.x, P.x) and
+                        intersection != bottom_point):
                 count_intersections += 1
         return count_intersections % 2 == 1
 
@@ -91,6 +91,26 @@ class Polygon:
             s = Segment(A, B)
             distance = min(distance, s.dist_from_point(P))
         return distance
+
+    # TODO: unittest covering
+    def get_bounding_box(self):
+        minX, minY = self.shape[0].x, self.shape[0].y
+        maxX, maxY = self.shape[0].x, self.shape[0].y
+        for p in self.shape:
+            minX = min(minX, p.x)
+            maxX = max(maxX, p.x)
+            minY = min(minY, p.y)
+            maxY = max(maxY, p.y)
+        return Point(minX, minY), Point(maxX, maxY)
+
+    # TODO: unittest covering
+    def get_center_of_mass(self):
+        sum_length = 0
+        center_of_mass = Point()
+        for side in self.get_side_segments():
+            center_of_mass += side.center
+            sum_length += side.length
+        return center_of_mass / sum_length
 
     def __repr__(self):
         return 'Polygon({})'.format(repr(self.shape))

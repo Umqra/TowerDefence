@@ -4,6 +4,7 @@ from Model.light import Lighting
 
 class MapCell:
     directions = [(-1, 0), (1, 0), (0, 1), (0, -1)]
+    cell_size = 10
 
     def __init__(self, state, x, y, passable, lighting=None, adjacent=None):
         self.state = state
@@ -12,9 +13,16 @@ class MapCell:
         self.passable = passable
         self.lighting = lighting if lighting is not None else Lighting()
         self.adjacent = adjacent if adjacent is not None else []
+        self.items = []
 
     def add_adjacent(self, cell):
         self.adjacent.append(cell)
+
+    def tick_init(self, dt):
+        self.items.clear()
+
+    def add_item(self, item):
+        self.items.append(item)
 
     def tick(self, dt):
         normal_light = self.state.get_normal_light()

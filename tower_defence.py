@@ -1,10 +1,12 @@
 from datetime import datetime
 from PyQt4.QtGui import QColor
+from PyQt4.QtCore import QPointF
 import math
 from Geometry.line import Line
 from Geometry.point import Point
 from Geometry.polygon import Polygon
 from Geometry.segment import Segment
+from Model.bullets import Bullet, EnergyBullet
 from Model.game_map import GameMap
 from Model.light import LightImpulse
 
@@ -32,7 +34,7 @@ class MockState:
 
     def get_normal_light(self):
         delta = datetime.now() - self.start_time
-        return (delta.seconds % 51) * 5 + 1
+        return 51 * 5 - (delta.seconds % 51) * 5 + 1
 
 
 class MapTest(QtGui.QWidget):
@@ -44,6 +46,14 @@ class MapTest(QtGui.QWidget):
         self.setFixedSize(800, 800)
         self.map = GameMap(10, 10, MockState())
         self.map.initialize_from_file('map1.txt')
+        b1 = EnergyBullet(Point(30, 30), None, 10)
+        b2 = EnergyBullet(Point(100, 100), None, 10)
+        b1.target = b2
+        b2.target = b1
+        self.map.add_bullet(b1)
+        self.map.add_bullet(b2)
+
+
         self.timer = QtCore.QBasicTimer()
         self.timer.start(MapTest.interval, self)
 
@@ -67,23 +77,17 @@ class MapTest(QtGui.QWidget):
         for x in range(self.map.height):
             for y in range(self.map.width):
                 value = int(self.map.map[x][y].lighting.value)
-
                 qp.fillRect(x * size, y * size, size, size, QColor.fromRgb(value, value, value))
                 qp.drawRect(x * size, y * size, size, size)
 
+        for bullet in self.map.bullets:
+            bullet_size = 10
+            qpts = []
+            for p in bullet.shape.shape:
+                qpts.append(QPointF(p.x, p.y))
+            qp.drawPolygon(*qpts)
 
 def main():
-    args = parse_arguments()
-    A = Point(1, 0)
-    B = Point(4, 3)
-    C = Point(5, 6)
-    D = Point(-1, 100)
-    p = Polygon([A, B, C, D])
-    print(p)
-    p.rotate_around_origin(math.pi / 2)
-    print(p)
-    return
-
     app = QtGui.QApplication(sys.argv)
     widget = MapTest()
     widget.show()
