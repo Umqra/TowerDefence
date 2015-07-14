@@ -80,6 +80,21 @@ class Polygon:
                     return True
         return False
 
+    def intersects_bounding_boxes(self, other):
+        self_l, self_r = self.get_bounding_box()
+        other_l, other_r = other.get_bounding_box()
+        return (max(self_l.x, other_l.x) <= min(self_r.x, other_r.x) and
+                max(self_l.y, other_l.y) <= min(self_r.y, other_r.y))
+
+    def intersects_with_polygon_approximately(self, other):
+        for p in other.shape:
+            if self.contain_point(p):
+                return True
+        for p in self.shape:
+            if other.contain_point(p):
+                return True
+        return False
+
     def distance_from_point(self, P: Point):
         if self.contain_point(P):
             return 0

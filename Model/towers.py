@@ -83,7 +83,7 @@ class RechargeTower(Tower):
 
 
 class EnergyTower(RechargeTower):
-    def __init__(self, shape, target_chooser, fraction, health=10, damage=10, recharge_time=1):
+    def __init__(self, shape, target_chooser, fraction, health=10, damage=10, recharge_time=5):
         super().__init__(shape, target_chooser, fraction, health, damage, recharge_time)
 
     def attack(self):

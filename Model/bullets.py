@@ -42,7 +42,7 @@ class Bullet:
             for item in cell.items:
                 if self == item:
                     continue
-                if self.shape.intersects_with_polygon(item.shape):
+                if self.shape.intersects_bounding_boxes(item.shape):
                     events.append(BulletHitEvent(self, item))
         return events
 

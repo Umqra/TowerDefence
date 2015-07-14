@@ -58,6 +58,11 @@ class Point:
     def length(self):
         return math.sqrt(self.dot_product(self))
 
+    # TODO: unittest =)
+    @property
+    def angle(self):
+        return math.atan2(self.y, self.x)
+
     def set_length(self, new_len):
         if not isinstance(new_len, Real):
             raise TypeError("Point.set_length: expected Real, given {}".format(type(new_len)))

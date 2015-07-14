@@ -1,5 +1,5 @@
 from datetime import datetime
-from PyQt4.QtGui import QColor
+from PyQt4.QtGui import QColor, QPixmap, QImage, QGridLayout
 from PyQt4.QtCore import QPointF
 import math
 from Geometry.line import Line
@@ -11,6 +11,8 @@ from Model.game_fraction import GameFraction
 from Model.game_map import GameMap
 from Model.light import LightImpulse
 from Model.towers import EnergyTower, SimpleChooser
+from View.bullet_view import EnergyBulletView
+from View.tower_view import EnergyTowerView
 
 __author__ = 'umqra'
 
@@ -36,11 +38,11 @@ class MockState:
 
     def get_normal_light(self):
         delta = datetime.now() - self.start_time
-        return 51 * 5 - (delta.seconds % 51) * 5 + 1
+        return (delta.seconds % 51) * 5 + 1
 
 
 class MapTest(QtGui.QWidget):
-    fps = 20
+    fps = 40
     interval = 1000. / fps
 
     def __init__(self):
@@ -50,25 +52,36 @@ class MapTest(QtGui.QWidget):
         self.map.initialize_from_file('map1.txt')
 
         chooser = SimpleChooser(self.map)
-        t1 = EnergyTower(Polygon([Point(45, 15), Point(55, 45), Point(55, 55), Point(45, 55)]), chooser,
+        t1 = EnergyTower(Polygon([Point(50, 50), Point(100, 50), Point(100, 100), Point(50, 100)]), chooser,
                          GameFraction.Light)
-        t2 = EnergyTower(Polygon([Point(205, 205), Point(215, 205), Point(215, 215), Point(205, 215)]), chooser,
+        t2 = EnergyTower(Polygon([Point(200, 200), Point(250, 200), Point(250, 250), Point(200, 250)]), chooser,
                          GameFraction.Dark)
-        t3 = EnergyTower(Polygon([Point(305, 55), Point(315, 55), Point(315, 65), Point(305, 65)]), chooser,
+        t3 = EnergyTower(Polygon([Point(350, 50), Point(400, 50), Point(400, 100), Point(350, 50)]), chooser,
                          GameFraction.Dark)
+        self.layout = QGridLayout()
+        v1 = EnergyTowerView(t1)
+        v2 = EnergyTowerView(t2)
+        v3 = EnergyTowerView(t3)
+        self.layout.addWidget(v1, 0, 0)
+        self.layout.addWidget(v2, 0, 0)
+        self.layout.addWidget(v3, 0, 0)
         self.map.add_tower(t1)
         self.map.add_tower(t2)
         self.map.add_tower(t3)
+        self.setLayout(self.layout)
 
         self.timer = QtCore.QBasicTimer()
         self.timer.start(MapTest.interval, self)
 
+        self.tower_image = QPixmap(QImage('Resources/Images/tower.png').scaledToWidth(50))
+
     def timerEvent(self, e):
+
         self.map.tick(MapTest.interval / 1000)
         self.repaint()
 
     def mousePressEvent(self, e):
-        size = 30
+        size = 50
         x = e.x() // size
         y = e.y() // size
         self.map.map[x][y].lighting.add_impulse(LightImpulse(500))
@@ -76,7 +89,7 @@ class MapTest(QtGui.QWidget):
     def paintEvent(self, e):
         qp = QtGui.QPainter()
         qp.begin(self)
-        size = 30
+        size = 50
         for x in range(self.map.height):
             for y in range(self.map.width):
                 value = int(self.map.map[x][y].lighting.value)
@@ -84,15 +97,10 @@ class MapTest(QtGui.QWidget):
                 qp.drawRect(x * size, y * size, size, size)
 
         for bullet in self.map.bullets:
-            bullet_size = 10
-            qpts = []
-            for p in bullet.shape.shape:
-                qpts.append(QPointF(p.x, p.y))
-            qp.drawPolygon(*qpts)
-        for tower in self.map.towers:
-            p = tower.shape.get_center_of_mass()
-            qp.drawText(QPointF(p.x, p.y), "Tower {}".format(tower.health))
-
+            if not hasattr(bullet, 'test'):
+                bullet.test = 1
+                b_cur = EnergyBulletView(bullet)
+                self.layout.addWidget(b_cur, 0, 0)
 
 def main():
     app = QtGui.QApplication(sys.argv)
