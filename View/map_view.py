@@ -3,9 +3,26 @@ from Model.events import *
 
 __author__ = 'umqra'
 
-from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout
+from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QStackedLayout
 from View.tower_view import get_tower_view
 from View.bullet_view import get_bullet_view
+
+
+class CellsView(QWidget):
+    def __init__(self, model, cell_size=50):
+        super().__init__()
+        self.model = model
+        self.cell_size = cell_size
+
+    def paintEvent(self, QPaintEvent):
+        qp = QPainter()
+        qp.begin(self)
+        for x in range(self.model.height):
+            for y in range(self.model.width):
+                value = int(self.model.map[x][y].lighting.value)
+
+                qp.fillRect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size,
+                            QColor.fromRgbF(0, 0, 0, (1 - value / 255) / 2))
 
 
 class MapView(QWidget):
@@ -18,27 +35,31 @@ class MapView(QWidget):
         self.warriors_view = []
         self.towers_view = []
         self.spells_view = []
-        self.layout = QGridLayout()
+        self.layout = QStackedLayout()
+        self.layout.setStackingMode(QStackedLayout.StackAll)
         self.setLayout(self.layout)
+
         self.init_details()
 
     def add_bullet(self, bullet_view):
-        self.layout.addWidget(bullet_view, 0, 0)
+        self.layout.insertWidget(0, bullet_view)
         self.bullets_view.append(bullet_view)
 
     def add_tower(self, tower_view):
-        self.layout.addWidget(tower_view, 0, 0)
+        self.layout.insertWidget(0, tower_view)
         self.towers_view.append(tower_view)
 
     def add_warrior(self, warrior_view):
-        self.layout.addWidget(warrior_view, 0, 0)
+        self.layout.insertWidget(0, warrior_view)
         self.warriors_view.append(warrior_view)
 
     def add_spell(self, spell_view):
-        self.layout.addWidget(spell_view, 0, 0)
+        self.layout.insertWidget(0, spell_view)
         self.spells_view.append(spell_view)
 
     def init_details(self):
+        cells_view = CellsView(self.model, self.cell_size)
+        self.layout.insertWidget(0, cells_view)
         for tower in self.model.towers:
             view = get_tower_view(tower)
             self.add_tower(view)
@@ -50,15 +71,6 @@ class MapView(QWidget):
         for spell in self.model.spells:
             self.add_spell(spell)
 
-    def paintEvent(self, QPaintEvent):
-        qp = QPainter()
-        qp.begin(self)
-        for x in range(self.model.height):
-            for y in range(self.model.width):
-                value = int(self.model.map[x][y].lighting.value)
-                qp.fillRect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size,
-                            QColor.fromRgb(value, value, value))
-                qp.drawRect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size)
 
     def create_view_from_event(self, event):
         if isinstance(event, CreateTowerEvent):

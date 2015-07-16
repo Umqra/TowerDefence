@@ -33,4 +33,4 @@ class EnergyTowerView(TowerView):
         qp = QPainter()
         qp.begin(self)
         bbox = self.model.shape.get_bounding_box()
-        qp.drawPixmap(bbox[0].x - 10, bbox[0].y - 33, self.pixmap)
+        qp.drawPixmap(bbox[0].x, bbox[0].y - 25, self.pixmap)
