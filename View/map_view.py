@@ -6,23 +6,7 @@ __author__ = 'umqra'
 from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QStackedLayout
 from View.tower_view import get_tower_view
 from View.bullet_view import get_bullet_view
-
-
-class CellsView(QWidget):
-    def __init__(self, model, cell_size=50):
-        super().__init__()
-        self.model = model
-        self.cell_size = cell_size
-
-    def paintEvent(self, QPaintEvent):
-        qp = QPainter()
-        qp.begin(self)
-        for x in range(self.model.height):
-            for y in range(self.model.width):
-                value = int(self.model.map[x][y].lighting.value)
-
-                qp.fillRect(x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size,
-                            QColor.fromRgbF(0, 0, 0, (1 - value / 255) / 2))
+from View.cells_view import LightView, CellsView
 
 
 class MapView(QWidget):
@@ -46,7 +30,7 @@ class MapView(QWidget):
         self.bullets_view.append(bullet_view)
 
     def add_tower(self, tower_view):
-        self.layout.insertWidget(0, tower_view)
+        print(self.layout.insertWidget(2, tower_view))
         self.towers_view.append(tower_view)
 
     def add_warrior(self, warrior_view):
@@ -58,8 +42,10 @@ class MapView(QWidget):
         self.spells_view.append(spell_view)
 
     def init_details(self):
-        cells_view = CellsView(self.model, self.cell_size)
-        self.layout.insertWidget(0, cells_view)
+        self.light_view = LightView(self.model, self.cell_size)
+        self.cells_view = CellsView(self.model, self.cell_size)
+
+        self.layout.insertWidget(0, self.light_view)
         for tower in self.model.towers:
             view = get_tower_view(tower)
             self.add_tower(view)
@@ -70,6 +56,7 @@ class MapView(QWidget):
             self.add_bullet(view)
         for spell in self.model.spells:
             self.add_spell(spell)
+        self.layout.insertWidget(0, self.cells_view)
 
 
     def create_view_from_event(self, event):

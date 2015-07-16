@@ -6,11 +6,12 @@ class MapCell:
     directions = [(-1, 0), (1, 0), (0, 1), (0, -1)]
     cell_size = 50
 
-    def __init__(self, state, x, y, passable, lighting=None, adjacent=None):
+    def __init__(self, state, x, y, passable, cell_repr, lighting=None, adjacent=None):
         self.state = state
         self.x = x
         self.y = y
         self.passable = passable
+        self.cell_repr = cell_repr
         self.lighting = lighting if lighting is not None else Lighting()
         self.adjacent = adjacent if adjacent is not None else []
         self.items = []
@@ -40,8 +41,8 @@ class MapCell:
 
 
 class ForestCell(MapCell):
-    def __init__(self, state, x, y, lighting=None, adjacent=None):
-        super().__init__(state, x, y, False, lighting, adjacent)
+    def __init__(self, state, x, y, cell_repr, lighting=None, adjacent=None):
+        super().__init__(state, x, y, False, cell_repr, lighting, adjacent)
 
     def __repr__(self):
         return 'ForestCell(state, {0}, {1}, {2}, {3})'.format(
@@ -52,8 +53,8 @@ class ForestCell(MapCell):
 
 
 class RoadCell(MapCell):
-    def __init__(self, state, x, y, lighting=None, adjacent=None):
-        super().__init__(state, x, y, True, lighting, adjacent)
+    def __init__(self, state, x, y, cell_repr, lighting=None, adjacent=None):
+        super().__init__(state, x, y, True, cell_repr, lighting, adjacent)
 
     def __repr__(self):
         return 'RoadCell(state, {0}, {1}, {2}, {3})'.format(
@@ -64,8 +65,8 @@ class RoadCell(MapCell):
 
 
 class GrassCell(MapCell):
-    def __init__(self, state, x, y, lighting=None, adjacent=None):
-        super().__init__(state, x, y, True, lighting, adjacent)
+    def __init__(self, state, x, y, cell_repr, lighting=None, adjacent=None):
+        super().__init__(state, x, y, True, cell_repr, lighting, adjacent)
 
     def __repr__(self):
         return 'GrassCell(state, {0}, {1}, {2}, {3})'.format(
@@ -76,8 +77,8 @@ class GrassCell(MapCell):
 
 
 class WaterCell(MapCell):
-    def __init__(self, state, x, y, lighting=None, adjacent=None):
-        super().__init__(state, x, y, False, lighting, adjacent)
+    def __init__(self, state, x, y, cell_repr, lighting=None, adjacent=None):
+        super().__init__(state, x, y, False, cell_repr, lighting, adjacent)
 
     def __repr__(self):
         return 'WaterCell(state, {0}, {1}, {2}, {3})'.format(
@@ -100,4 +101,4 @@ cells_dict = {
 
 
 def create_cell(state, x, y, cell_repr):
-    return cells_dict[cell_repr](state, x, y)
+    return cells_dict[cell_repr[0]](state, x, y, cell_repr)
