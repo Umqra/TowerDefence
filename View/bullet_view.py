@@ -4,13 +4,20 @@ import math
 
 __author__ = 'umqra'
 
+from Model.bullets import EnergyBullet
+
+
+def get_bullet_view(bullet):
+    if isinstance(bullet, EnergyBullet):
+        return EnergyBulletView(bullet)
+    return BulletView(bullet)
+
 
 class BulletView(QWidget):
-    def __init__(self, model, count_states):
+    def __init__(self, model):
         super().__init__()
         self.model = model
         self.state = 0
-        self.count_states = count_states
 
     def paintEvent(self, QPaintEvent):
         pass
@@ -26,8 +33,10 @@ class EnergyBulletView(BulletView):
         QImage('Resources/Images/energy_bullet_2').scaledToWidth(25),
     ]
 
+    count_states = 6
+
     def __init__(self, model):
-        super().__init__(model, 6)
+        super().__init__(model)
 
     def paintEvent(self, QPaintEvent):
         if not self.model.is_alive:
@@ -36,8 +45,8 @@ class EnergyBulletView(BulletView):
         qp.begin(self)
         direction = self.model.direction
         angle_in_rad = direction.angle
-        pixmap = QPixmap(EnergyBulletView.images[self.state].transformed(QtGui.QTransform().rotateRadians(angle_in_rad)))
+        pixmap = QPixmap(
+            EnergyBulletView.images[self.state].transformed(QtGui.QTransform().rotateRadians(angle_in_rad)))
         bbox = self.model.shape.get_bounding_box()
         qp.drawPixmap(bbox[0].x, bbox[0].y, pixmap)
-        #qp.drawRect(bbox[0].x, bbox[0].y, bbox[1].x - bbox[0].x, bbox[1].y - bbox[0].y)
-        self.state = (self.state + 1) % self.count_states
+        self.state = (self.state + 1) % EnergyBulletView.count_states

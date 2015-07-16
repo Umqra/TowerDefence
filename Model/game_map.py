@@ -7,6 +7,7 @@ import logging
 import logging.config
 import itertools
 
+from Model.events import *
 from Model.map_cell import create_cell, MapCell
 
 
@@ -84,22 +85,22 @@ class GameMap:
         self.views.append(view)
 
     def add_tower(self, tower):
-        self.towers.append(tower)
+        self.process_events([CreateTowerEvent(tower)])
 
     def delete_tower(self, tower):
-        self.towers.remove(tower)
+        self.process_events([DeleteTowerEvent(tower)])
 
     def add_warrior(self, warrior):
-        self.warriors.append(warrior)
+        self.process_events([CreateWarriorEvent(warrior)])
 
     def delete_warrior(self, warrior):
-        self.warriors.remove(warrior)
+        self.process_events([DeleteWarriorEvent(warrior)])
 
     def add_bullet(self, bullet):
-        self.bullets.append(bullet)
+        self.process_events([CreateBulletEvent(bullet)])
 
     def delete_bullet(self, bullet):
-        self.bullets.remove(bullet)
+        self.process_events([DeleteBulletEvent(bullet)])
 
     def tick_init(self, dt):
         for row in range(self.height):
@@ -110,7 +111,7 @@ class GameMap:
 
     def tick(self, dt):
         self.tick_init(dt)
-        self.events.clear()
+        events = []
         for item in itertools.chain(self.warriors, self.towers, self.bullets):
             item.tick_init(dt)
             self.assign_cells(item)
@@ -118,15 +119,15 @@ class GameMap:
         for item in itertools.chain(self.warriors, self.towers, self.bullets):
             new_events = item.tick(dt)
             if new_events is not None:
-                self.events += new_events
+                events += new_events
 
         for x in range(self.height):
             for y in range(self.width):
                 new_events = self.map[x][y].tick(dt)
                 if new_events is not None:
-                    self.events += new_events
+                    events += new_events
 
-        self.process_events()
+        self.process_events(events)
 
     def assign_cells(self, item):
         shape = item.shape
@@ -143,6 +144,8 @@ class GameMap:
                     item.add_cell(self.map[row][col])
                     self.map[row][col].add_item(item)
 
-    def process_events(self):
-        for event in self.events:
+    def process_events(self, events):
+        for event in events:
             event.process(self)
+        for view in self.views:
+            view.process_events(events)

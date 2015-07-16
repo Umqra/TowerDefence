@@ -1,7 +1,13 @@
 __author__ = 'umqra'
 
-import Model.towers as Towers
+from Model.towers import EnergyTower
 from PyQt4.QtGui import QWidget, QPainter, QPixmap, QImage
+
+
+def get_tower_view(tower):
+    if isinstance(tower, EnergyTower):
+        return EnergyTowerView(tower)
+    return TowerView(tower)
 
 
 class TowerView(QWidget):

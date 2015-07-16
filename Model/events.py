@@ -8,14 +8,48 @@ class GameEvent:
     pass
 
 
-class CreateBulletEvent(GameEvent):
-    def __init__(self, bullet):
-        self.bullet = bullet
+class CreateEvent(GameEvent):
+    def __init__(self, item):
+        self.item = item
 
     def process(self, state):
-        print("Add bullet ? {}".format(self.bullet))
-        state.bullets.append(self.bullet)
+        pass
 
+
+class CreateBulletEvent(CreateEvent):
+    def __init__(self, bullet):
+        super().__init__(bullet)
+
+    def process(self, state):
+        print("Add bullet ? {}".format(self.item))
+        state.bullets.append(self.item)
+
+
+class CreateTowerEvent(CreateEvent):
+    def __init__(self, tower):
+        super().__init__(tower)
+
+    def process(self, state):
+        print("Add tower ? {}".format(self.item))
+        state.towers.append(self.item)
+
+
+class CreateWarriorEvent(CreateEvent):
+    def __init__(self, warrior):
+        super().__init__(warrior)
+
+    def process(self, state):
+        print("Add warrior ? {}".format(self.item))
+        state.warriors.append(self.item)
+
+
+class CreateSpellEvent(CreateEvent):
+    def __init__(self, spell):
+        super().__init__(spell)
+
+    def process(self, state):
+        print("Add spell ? {}".format(self.item))
+        state.spells.append(spell)
 
 class CollisionEvent(GameEvent):
     def __init__(self, first, second):
@@ -41,7 +75,7 @@ class BulletHitEvent(CollisionEvent):
             self.bullet.is_alive = False
 
 
-class DieEvent(GameEvent):
+class DeleteEvent(GameEvent):
     def __init__(self, item):
         self.item = item
 
@@ -49,17 +83,32 @@ class DieEvent(GameEvent):
         pass
 
 
-class BulletDieEvent(DieEvent):
+class DeleteBulletEvent(DeleteEvent):
     def __init__(self, item):
         super().__init__(item)
 
     def process(self, state):
-        state.delete_bullet(self.item)
+        state.bullets.remove(self.item)
 
 
-class TowerDieEvent(DieEvent):
+class DeleteTowerEvent(DeleteEvent):
     def __init__(self, item):
         super().__init__(item)
 
     def process(self, state):
-        state.delete_tower(self.item)
+        state.towers.remove(self.item)
+
+
+class DeleteWarriorEvent(DeleteEvent):
+    def __init__(self, item):
+        super().__init__(item)
+
+    def process(self, state):
+        state.warriors.remove(self.item)
+
+class DeleteSpellEvent(DeleteEvent):
+    def __init__(self, item):
+        super().__init__(item)
+
+    def process(self, state):
+        state.spells.remove(self.item)

@@ -1,5 +1,5 @@
 from Geometry.point import Point
-from Model.events import BulletHitEvent, BulletDieEvent
+from Model.events import BulletHitEvent, DeleteBulletEvent
 
 __author__ = 'umqra'
 
@@ -25,7 +25,7 @@ class Bullet:
 
     def tick(self, dt):
         if not self.is_alive:
-            return [BulletDieEvent(self)]
+            return [DeleteBulletEvent(self)]
         if self.target is not None and not self.target.is_alive:
             self.target = None
         if self.target is not None:

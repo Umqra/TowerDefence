@@ -2,7 +2,7 @@ import itertools
 from Model.bullets import Bullet, EnergyBullet
 
 __author__ = 'umqra'
-from Model.events import CreateBulletEvent, TowerDieEvent
+from Model.events import CreateBulletEvent, DeleteTowerEvent
 from Model.game_fraction import is_warred_fractions
 
 
@@ -53,7 +53,7 @@ class Tower:
 
     def tick(self, dt):
         if not self.is_alive:
-            return [TowerDieEvent(self)]
+            return [TowerDeleteEvent(self)]
         self.choose_target()
         self.attack()
 
@@ -73,7 +73,7 @@ class RechargeTower(Tower):
 
     def tick(self, dt):
         if not self.is_alive:
-            return [TowerDieEvent(self)]
+            return [DeleteTowerEvent(self)]
         self.time_to_attack -= dt
         if self.time_to_attack > 0:
             return
