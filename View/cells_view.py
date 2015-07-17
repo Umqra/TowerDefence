@@ -23,7 +23,36 @@ class LightView(QWidget):
 
 images = {
     "F1": QImage('Resources/Images/F1.png').scaledToWidth(50),
+    "F2": QImage('Resources/Images/F2.png').scaledToWidth(50),
+    "F3": QImage('Resources/Images/F3.png').scaledToWidth(50),
+    "F4": QImage('Resources/Images/F4.png').scaledToWidth(50),
+    "F5": QImage('Resources/Images/F5.png').scaledToWidth(50),
+    "F6": QImage('Resources/Images/F6.png').scaledToWidth(50),
+    "F7": QImage('Resources/Images/F7.png').scaledToWidth(50),
+    "F8": QImage('Resources/Images/F8.png').scaledToWidth(50),
+    "F9": QImage('Resources/Images/F9.png').scaledToWidth(50),
+
+    "FA": QImage('Resources/Images/FA.png').scaledToWidth(50),
+    "FB": QImage('Resources/Images/FB.png').scaledToWidth(50),
+    "FC": QImage('Resources/Images/FC.png').scaledToWidth(50),
+    "FD": QImage('Resources/Images/FD.png').scaledToWidth(50),
+
+
     "G1": QImage('Resources/Images/G1.png').scaledToWidth(50),
+    "G2": QImage('Resources/Images/G2.png').scaledToWidth(50),
+    "G3": QImage('Resources/Images/G3.png').scaledToWidth(50),
+    "G4": QImage('Resources/Images/G4.png').scaledToWidth(50),
+    "G5": QImage('Resources/Images/G5.png').scaledToWidth(50),
+    "G6": QImage('Resources/Images/G6.png').scaledToWidth(50),
+    "G7": QImage('Resources/Images/G7.png').scaledToWidth(50),
+    "G8": QImage('Resources/Images/G8.png').scaledToWidth(50),
+    "G9": QImage('Resources/Images/G9.png').scaledToWidth(50),
+
+    "GA": QImage('Resources/Images/GA.png').scaledToWidth(50),
+    "GB": QImage('Resources/Images/GB.png').scaledToWidth(50),
+    "GC": QImage('Resources/Images/GC.png').scaledToWidth(50),
+    "GD": QImage('Resources/Images/GD.png').scaledToWidth(50),
+
     "R1": QImage('Resources/Images/R1.png').scaledToWidth(50),
 }
 
