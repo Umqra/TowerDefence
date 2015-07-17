@@ -1,5 +1,6 @@
 import itertools
 from Model.events import *
+from View.custom_layout import CustomLayout
 
 __author__ = 'umqra'
 
@@ -19,45 +20,43 @@ class MapView(QWidget):
         self.warriors_view = []
         self.towers_view = []
         self.spells_view = []
-        self.layout = QStackedLayout()
-        self.layout.setStackingMode(QStackedLayout.StackAll)
+        self.layout = CustomLayout()
         self.setLayout(self.layout)
 
         self.init_details()
 
     def add_bullet(self, bullet_view):
-        self.layout.insertWidget(0, bullet_view)
+        self.layout.add_on_top(bullet_view)
         self.bullets_view.append(bullet_view)
 
     def add_tower(self, tower_view):
-        print(self.layout.insertWidget(2, tower_view))
+        self.layout.add_on_top(tower_view)
         self.towers_view.append(tower_view)
 
     def add_warrior(self, warrior_view):
-        self.layout.insertWidget(0, warrior_view)
+        #self.layout.insertWidget(0, warrior_view)
         self.warriors_view.append(warrior_view)
 
     def add_spell(self, spell_view):
-        self.layout.insertWidget(0, spell_view)
+        #self.layout.insertWidget(0, spell_view)
         self.spells_view.append(spell_view)
 
     def init_details(self):
-        self.light_view = LightView(self.model, self.cell_size)
-        self.cells_view = CellsView(self.model, self.cell_size)
+        light_view = LightView(self.model, self.cell_size)
+        cells_view = CellsView(self.model, self.cell_size)
 
-        self.layout.insertWidget(0, self.light_view)
+        self.layout.add_on_top(light_view)
+        self.layout.add_on_bottom(cells_view)
         for tower in self.model.towers:
             view = get_tower_view(tower)
             self.add_tower(view)
-        for warrior in self.model.warriors:
-            self.add_warrior(warrior)
+#        for warrior in self.model.warriors:
+#            self.add_warrior(warrior)
         for bullet in self.model.bullets:
             view = get_bullet_view(bullet)
             self.add_bullet(view)
-        for spell in self.model.spells:
-            self.add_spell(spell)
-        self.layout.insertWidget(0, self.cells_view)
-
+#        for spell in self.model.spells:
+#            self.add_spell(spell)
 
     def create_view_from_event(self, event):
         if isinstance(event, CreateTowerEvent):
