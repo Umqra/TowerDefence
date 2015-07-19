@@ -1,5 +1,6 @@
 import itertools
 from Model.bullets import Bullet, EnergyBullet
+from Model.light import Lighting
 
 __author__ = 'umqra'
 from Model.events import CreateBulletEvent, DeleteTowerEvent
@@ -33,7 +34,8 @@ class Tower:
         self.occupied_cells = []
 
         self.target_chooser = target_chooser
-        target_chooser.add_tower(self)
+        if target_chooser is not None:
+            target_chooser.add_tower(self)
 
         self.selected = False
 
@@ -100,3 +102,18 @@ class EnergyTower(RechargeTower):
             return
         return [CreateBulletEvent(
             EnergyBullet(self.gun_position, self.target, self.fraction, self.damage))]
+
+
+class LightTower(RechargeTower):
+    def __init__(self, shape, fraction, health=100, impulse_force=200, recharge_time=5):
+        super().__init__(shape, None, fraction, health, None, recharge_time)
+        self.impulse_force = impulse_force
+
+    def tick(self, dt):
+        if not self.is_alive:
+            return [DeleteTowerEvent(self)]
+        self.time_to_attack = max(0, self.time_to_attack - dt)
+        if self.time_to_attack > 0:
+            return
+        for cell in self.occupied_cells:
+            cell.add_impulse(Lighting(self.impulse_force))

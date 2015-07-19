@@ -16,6 +16,9 @@ class MapCell:
         self.adjacent = adjacent if adjacent is not None else []
         self.items = []
 
+    def add_impulse(self, impulse):
+        self.lighting.add_impulse(impulse)
+
     def add_adjacent(self, cell):
         self.adjacent.append(cell)
 

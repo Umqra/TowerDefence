@@ -1,7 +1,7 @@
 from Model.game_map import GameMap
 from Model.store import StoreItem
 from Model.time import Time
-from Model.towers import EnergyTower
+from Model.towers import EnergyTower, LightTower
 
 __author__ = 'umqra'
 
@@ -20,4 +20,6 @@ class Level1(LevelLoader):
         game_state.store.add_items([
             StoreItem("Башенка", EnergyTower, 50,
                       "Башенка - удивительное оружие света,\n которое защитит вас от любого типа монстров"),
+            StoreItem("Светилышко", LightTower, 100,
+                      "Светилышко - это чудо!\nНе упускай момента чтобы купить 'Светилышко'!"),
         ])

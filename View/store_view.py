@@ -1,14 +1,15 @@
 from PyQt4 import QtCore
 from PyQt4.QtGui import QWidget, QGridLayout, QPainter, QPixmap, QPushButton, QLabel
 from Model.bullets import Bullet
-from Model.towers import Tower, EnergyTower
+from Model.towers import Tower, EnergyTower, LightTower
 from View.bullet_view import get_bullet_view
-from View.tower_view import get_tower_view, EnergyTowerView
+from View.tower_view import get_tower_view, EnergyTowerView, LightTowerView
 
 __author__ = 'umqra'
 
 view_by_model = {
     EnergyTower: EnergyTowerView,
+    LightTower: LightTowerView
 }
 
 
