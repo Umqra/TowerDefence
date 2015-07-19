@@ -4,6 +4,7 @@ from View.custom_layout import CustomLayout
 
 __author__ = 'umqra'
 
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QStackedLayout
 from View.tower_view import get_tower_view
 from View.bullet_view import get_bullet_view
@@ -11,10 +12,11 @@ from View.cells_view import LightView, CellsView
 
 
 class MapView(QWidget):
-    def __init__(self, model, cell_size=50):
+    def __init__(self, model, controller, cell_size=50):
         super().__init__()
         model.views.append(self)
         self.model = model
+        self.controller = controller
         self.cell_size = cell_size
         self.bullets_view = []
         self.warriors_view = []
@@ -72,3 +74,9 @@ class MapView(QWidget):
         for event in events:
             if isinstance(event, CreateEvent):
                 self.create_view_from_event(event)
+
+    def mousePressEvent(self, e):
+        if e.buttons() == Qt.RightButton:
+            self.controller.deselect()
+        else:
+            self.controller.select(e.x(), e.y())

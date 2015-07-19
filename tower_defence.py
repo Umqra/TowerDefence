@@ -2,6 +2,7 @@ from datetime import datetime
 from PyQt4.QtGui import QColor, QPixmap, QImage, QGridLayout
 from PyQt4.QtCore import QPointF
 import math
+from Controller.map_controller import MapController
 from Geometry.line import Line
 from Geometry.point import Point
 from Geometry.polygon import Polygon
@@ -39,7 +40,7 @@ class MockState:
 
     def get_normal_light(self):
         delta = datetime.now() - self.start_time
-        return (delta.seconds % 51) * 5 + 1
+        return 255
 
 
 class MapTest(QtGui.QWidget):
@@ -63,7 +64,7 @@ class MapTest(QtGui.QWidget):
         self.map.add_tower(t1)
         self.map.add_tower(t2)
         self.map.add_tower(t3)
-        self.layout.addWidget(MapView(self.map))
+        self.layout.addWidget(MapView(self.map, MapController(self.map)))
         self.setLayout(self.layout)
 
         self.timer = QtCore.QBasicTimer()
@@ -74,10 +75,7 @@ class MapTest(QtGui.QWidget):
         self.repaint()
 
     def mousePressEvent(self, e):
-        size = 50
-        x = e.x() // size
-        y = e.y() // size
-        self.map.map[x][y].lighting.add_impulse(LightImpulse(500))
+        self.map.add_impulse_at_position(e.x(), e.y())
 
 
 def main():

@@ -35,9 +35,17 @@ class Tower:
         self.target_chooser = target_chooser
         target_chooser.add_tower(self)
 
+        self.selected = False
+
     @property
     def is_alive(self):
         return self.health > 0
+
+    def select(self):
+        self.selected = True
+
+    def unselect(self):
+        self.selected = False
 
     def set_gun_position(self, pos):
         self.gun_position = pos
@@ -53,7 +61,7 @@ class Tower:
 
     def tick(self, dt):
         if not self.is_alive:
-            return [TowerDeleteEvent(self)]
+            return [DeleteTowerEvent(self)]
         self.choose_target()
         self.attack()
 
@@ -74,16 +82,17 @@ class RechargeTower(Tower):
     def tick(self, dt):
         if not self.is_alive:
             return [DeleteTowerEvent(self)]
-        self.time_to_attack -= dt
+        self.time_to_attack = max(0, self.time_to_attack - dt)
         if self.time_to_attack > 0:
             return
         self.choose_target()
-        self.time_to_attack = self.recharge_time
+        if self.target is not None:
+            self.time_to_attack = self.recharge_time
         return self.attack()
 
 
 class EnergyTower(RechargeTower):
-    def __init__(self, shape, target_chooser, fraction, health=10, damage=10, recharge_time=5):
+    def __init__(self, shape, target_chooser, fraction, health=100, damage=20, recharge_time=5):
         super().__init__(shape, target_chooser, fraction, health, damage, recharge_time)
 
     def attack(self):

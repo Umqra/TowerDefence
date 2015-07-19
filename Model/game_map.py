@@ -1,5 +1,6 @@
 from Geometry.point import Point
 from Geometry.polygon import Polygon
+from Model.light import LightImpulse
 
 __author__ = 'umqra'
 import re
@@ -149,3 +150,13 @@ class GameMap:
             event.process(self)
         for view in self.views:
             view.process_events(events)
+
+    def get_items_at_position(self, x, y):
+        row = x // MapCell.cell_size
+        col = y // MapCell.cell_size
+        return self.map[row][col].items
+
+    def add_impulse_at_position(self, x, y):
+        row = x // MapCell.cell_size
+        col = y // MapCell.cell_size
+        self.map[row][col].lighting.add_impulse(LightImpulse(500))

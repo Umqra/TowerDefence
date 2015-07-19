@@ -49,7 +49,8 @@ class CreateSpellEvent(CreateEvent):
 
     def process(self, state):
         print("Add spell ? {}".format(self.item))
-        state.spells.append(spell)
+        state.spells.append(self.item)
+
 
 class CollisionEvent(GameEvent):
     def __init__(self, first, second):
@@ -105,6 +106,7 @@ class DeleteWarriorEvent(DeleteEvent):
 
     def process(self, state):
         state.warriors.remove(self.item)
+
 
 class DeleteSpellEvent(DeleteEvent):
     def __init__(self, item):

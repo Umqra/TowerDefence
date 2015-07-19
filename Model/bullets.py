@@ -17,6 +17,14 @@ class Bullet:
         self.speed = speed
         self.cells = []
 
+        self.selected = False
+
+    def select(self):
+        self.selected = True
+
+    def unselect(self):
+        self.selected = False
+
     def add_cell(self, cell):
         self.cells.append(cell)
 

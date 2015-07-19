@@ -5,6 +5,8 @@ __author__ = 'umqra'
 
 
 class LightView(QWidget):
+    view_fading = 0.8
+
     def __init__(self, model, cell_size=50):
         super().__init__()
         self.model = model
@@ -18,7 +20,7 @@ class LightView(QWidget):
                 value = int(self.model.map[row][col].lighting.value)
 
                 qp.fillRect(row * self.cell_size, col * self.cell_size, self.cell_size, self.cell_size,
-                            QColor.fromRgbF(0, 0, 0, (1 - value / 255) / 2))
+                            QColor.fromRgbF(0, 0, 0, (1 - value / 255) * LightView.view_fading))
 
 
 images = {
