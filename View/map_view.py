@@ -1,22 +1,26 @@
 import itertools
+from Controller.map_controller import MapController
 from Model.events import *
 from View.custom_layout import CustomLayout
 
 __author__ = 'umqra'
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QStackedLayout
+from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QStackedLayout, QPen
 from View.tower_view import get_tower_view
 from View.bullet_view import get_bullet_view
 from View.cells_view import LightView, CellsView
 
 
 class MapView(QWidget):
-    def __init__(self, model, controller, cell_size=50):
+    def __init__(self, model, cell_size=50):
         super().__init__()
         model.views.append(self)
+        self.setMaximumWidth(cell_size * model.width)
+        self.setMaximumHeight(cell_size * model.height)
+
         self.model = model
-        self.controller = controller
+        self.controller = MapController(model)
         self.cell_size = cell_size
         self.bullets_view = []
         self.warriors_view = []
@@ -36,11 +40,11 @@ class MapView(QWidget):
         self.towers_view.append(tower_view)
 
     def add_warrior(self, warrior_view):
-        #self.layout.insertWidget(0, warrior_view)
+        self.layout.add_on_top(warrior_view)
         self.warriors_view.append(warrior_view)
 
     def add_spell(self, spell_view):
-        #self.layout.insertWidget(0, spell_view)
+        self.layout.add_on_top(spell_view)
         self.spells_view.append(spell_view)
 
     def init_details(self):
@@ -77,6 +81,6 @@ class MapView(QWidget):
 
     def mousePressEvent(self, e):
         if e.buttons() == Qt.RightButton:
-            self.controller.deselect()
+            self.controller.unselect()
         else:
             self.controller.select(e.x(), e.y())

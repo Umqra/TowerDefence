@@ -10,10 +10,13 @@ from Geometry.segment import Segment
 from Model.bullets import Bullet, EnergyBullet
 from Model.game_fraction import GameFraction
 from Model.game_map import GameMap
+from Model.game_state import GameState
+from Model.level_loader import Level1
 from Model.light import LightImpulse
 from Model.towers import EnergyTower, SimpleChooser
 from View.bullet_view import EnergyBulletView
 from View.map_view import MapView
+from View.state_view import StateView
 from View.tower_view import EnergyTowerView
 
 __author__ = 'umqra'
@@ -50,33 +53,22 @@ class MapTest(QtGui.QWidget):
     def __init__(self):
         super().__init__()
         self.setFixedSize(800, 800)
-        self.map = GameMap(10, 10, MockState())
-        self.map.initialize_from_file('map1.txt')
+        state = GameState()
 
-        chooser = SimpleChooser(self.map)
-        t1 = EnergyTower(Polygon([Point(50, 50), Point(100, 50), Point(100, 100), Point(50, 100)]), chooser,
-                         GameFraction.Light)
-        t2 = EnergyTower(Polygon([Point(200, 200), Point(250, 200), Point(250, 250), Point(200, 250)]), chooser,
-                         GameFraction.Dark)
-        t3 = EnergyTower(Polygon([Point(350, 50), Point(400, 50), Point(400, 100), Point(350, 50)]), chooser,
-                         GameFraction.Dark)
+        state.initialize_with_loader(Level1)
+
+        self.state = state
+
         self.layout = QGridLayout()
-        self.map.add_tower(t1)
-        self.map.add_tower(t2)
-        self.map.add_tower(t3)
-        self.layout.addWidget(MapView(self.map, MapController(self.map)))
+        self.layout.addWidget(StateView(state))
         self.setLayout(self.layout)
 
         self.timer = QtCore.QBasicTimer()
         self.timer.start(MapTest.interval, self)
 
     def timerEvent(self, e):
-        self.map.tick(MapTest.interval / 1000)
+        self.state.tick(MapTest.interval / 1000)
         self.repaint()
-
-    def mousePressEvent(self, e):
-        self.map.add_impulse_at_position(e.x(), e.y())
-
 
 def main():
     app = QtGui.QApplication(sys.argv)

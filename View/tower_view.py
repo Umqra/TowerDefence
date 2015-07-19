@@ -24,6 +24,7 @@ def draw_loader(x, y, w, h, percentage, qp, color):
     qp.fillRect(x, y, int(w * percentage), h, color)
     qp.drawRect(x, y, w, h)
 
+
 class EnergyTowerView(TowerView):
     image = QImage('Resources/Images/tower.png').scaledToWidth(50)  # TODO: replace number to constant
 

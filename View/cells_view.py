@@ -74,6 +74,10 @@ class CellsView(QWidget):
 
     def init_cells(self):
         for row in range(self.model.height):
+            self.layout.setRowMinimumHeight(row, self.cell_size)
+        for col in range(self.model.width):
+            self.layout.setColumnMinimumWidth(col, self.cell_size)
+        for row in range(self.model.height):
             for col in range(self.model.width):
                 self.layout.addWidget(create_cell_view(self.model.map[row][col]), row, col)
 
