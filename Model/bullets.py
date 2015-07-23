@@ -15,7 +15,7 @@ class Bullet:
         self.damage = damage
         self.direction = self.target.shape.get_center_of_mass() - self.shape.get_center_of_mass()
         self.speed = speed
-        self.cells = []
+        self.occupied_cells = []
 
         self.selected = False
 
@@ -26,10 +26,10 @@ class Bullet:
         self.selected = False
 
     def add_cell(self, cell):
-        self.cells.append(cell)
+        self.occupied_cells.append(cell)
 
     def tick_init(self, dt):
-        self.cells.clear()
+        self.occupied_cells.clear()
 
     def tick(self, dt):
         if not self.is_alive:
@@ -46,7 +46,7 @@ class Bullet:
 
     def find_collisions(self):
         events = []
-        for cell in self.cells:
+        for cell in self.occupied_cells:
             for item in cell.items:
                 if self == item:
                     continue

@@ -37,15 +37,6 @@ def parse_arguments():
     return parser.parse_args()
 
 
-class MockState:
-    def __init__(self):
-        self.start_time = datetime.now()
-
-    def get_normal_light(self):
-        delta = datetime.now() - self.start_time
-        return 255
-
-
 class MapTest(QtGui.QWidget):
     fps = 40
     interval = 1000. / fps
@@ -66,9 +57,23 @@ class MapTest(QtGui.QWidget):
         self.timer = QtCore.QBasicTimer()
         self.timer.start(MapTest.interval, self)
 
+        self.setMouseTracking(True)
+
+    def setMouseTracking(self, flag):
+        def recursive_set(parent):
+            for child in parent.findChildren(QtCore.QObject):
+                try:
+                    child.setMouseTracking(flag)
+                except:
+                    pass
+                recursive_set(child)
+        QtGui.QWidget.setMouseTracking(self, flag)
+        recursive_set(self)
+
     def timerEvent(self, e):
         self.state.tick(MapTest.interval / 1000)
         self.repaint()
+
 
 def main():
     app = QtGui.QApplication(sys.argv)

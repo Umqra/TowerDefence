@@ -52,6 +52,15 @@ class CreateSpellEvent(CreateEvent):
         state.spells.append(self.item)
 
 
+class CreatePreviewEvent(CreateEvent):
+    def __init__(self, item):
+        super().__init__(item)
+
+    def process(self, state):
+        print("Add preview ? {}".format(self.item))
+        state.preview_items.append(self.item)
+
+
 class CollisionEvent(GameEvent):
     def __init__(self, first, second):
         self.first = first
@@ -114,3 +123,12 @@ class DeleteSpellEvent(DeleteEvent):
 
     def process(self, state):
         state.spells.remove(self.item)
+
+
+class DeletePreviewEvent(DeleteEvent):
+    def __init__(self, item):
+        super().__init__(item)
+
+    def process(self, state):
+        state.preview_items.remove(self.item)
+

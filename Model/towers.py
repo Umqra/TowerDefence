@@ -1,15 +1,18 @@
+import copy
 import itertools
+from Geometry.point import Point
+from Geometry.polygon import Polygon
 from Model.bullets import Bullet, EnergyBullet
-from Model.light import Lighting
+from Model.light import Lighting, LightImpulse
 
 __author__ = 'umqra'
 from Model.events import CreateBulletEvent, DeleteTowerEvent
-from Model.game_fraction import is_warred_fractions
+from Model.game_fraction import is_warred_fractions, GameFraction
 
 
 class SimpleChooser:
-    def __init__(self, state):
-        self.state = state
+    def __init__(self, map):
+        self.map = map
         self.towers = []
 
     def add_tower(self, tower):
@@ -19,7 +22,7 @@ class SimpleChooser:
         self.towers.remove(tower)
 
     def choose(self, tower):
-        for item in itertools.chain(self.state.towers, self.state.bullets, self.state.warriors):
+        for item in itertools.chain(self.map.towers, self.map.bullets, self.map.warriors):
             if is_warred_fractions(item.fraction, tower.fraction):
                 return item
 
@@ -39,9 +42,21 @@ class Tower:
 
         self.selected = False
 
+    def move_to(self, destination):
+        direction = destination - self.shape.get_center_of_mass()
+        self.shape.move(direction)
+
+    def move_by(self, direction):
+        self.shape.move(direction)
+
     @property
     def is_alive(self):
         return self.health > 0
+
+    @is_alive.setter
+    def is_alive(self, value):
+        if not value:
+            self.health = 0
 
     def select(self):
         self.selected = True
@@ -93,8 +108,23 @@ class RechargeTower(Tower):
         return self.attack()
 
 
+energy_tower_default_shape = Polygon([
+    Point(0, 0),
+    Point(50, 0),
+    Point(50, 50),
+    Point(0, 50)
+])
+
+simple_chooser = None
+
+
 class EnergyTower(RechargeTower):
-    def __init__(self, shape, target_chooser, fraction, health=100, damage=20, recharge_time=5):
+    def __init__(self, shape=None, target_chooser=None, fraction=GameFraction.Light, health=100,
+                 damage=20, recharge_time=5):
+        if shape is None:
+            shape = copy.deepcopy(energy_tower_default_shape)
+        if target_chooser is None:
+            target_chooser = simple_chooser
         super().__init__(shape, target_chooser, fraction, health, damage, recharge_time)
 
     def attack(self):
@@ -104,8 +134,19 @@ class EnergyTower(RechargeTower):
             EnergyBullet(self.gun_position, self.target, self.fraction, self.damage))]
 
 
+light_tower_default_shape = Polygon([
+    Point(0, 0),
+    Point(50, 0),
+    Point(50, 50),
+    Point(0, 50)
+])
+
+
 class LightTower(RechargeTower):
-    def __init__(self, shape, fraction, health=100, impulse_force=200, recharge_time=5):
+    def __init__(self, shape=None, fraction=GameFraction.Light, health=100, impulse_force=200,
+                 recharge_time=5):
+        if shape is None:
+            shape = copy.deepcopy(light_tower_default_shape)
         super().__init__(shape, None, fraction, health, None, recharge_time)
         self.impulse_force = impulse_force
 
@@ -116,4 +157,5 @@ class LightTower(RechargeTower):
         if self.time_to_attack > 0:
             return
         for cell in self.occupied_cells:
-            cell.add_impulse(Lighting(self.impulse_force))
+            cell.add_impulse(LightImpulse(self.impulse_force))
+        self.time_to_attack = self.recharge_time

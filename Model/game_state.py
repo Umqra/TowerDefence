@@ -20,6 +20,7 @@ class GameState:
         self.time = Time()
         self.store = Store()
         self.money = 0
+        self.controller = None
 
     def get_normal_light(self):
         max_value = Time.hours * Time.minutes * Time.seconds / 2
@@ -35,3 +36,8 @@ class GameState:
 
     def initialize_with_loader(self, loader):
         loader.init_game(self)
+
+    def set_controller(self, controller):
+        self.map.set_controller(controller)
+        self.store.set_controller(controller)
+        self.controller = controller

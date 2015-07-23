@@ -1,6 +1,6 @@
 __author__ = 'umqra'
 
-from Model.towers import EnergyTower
+from Model.towers import EnergyTower, LightTower
 from PyQt4.QtGui import QWidget, QPainter, QPixmap, QImage, QColor, QGridLayout
 from PyQt4.QtCore import Qt
 
@@ -8,6 +8,8 @@ from PyQt4.QtCore import Qt
 def get_tower_view(tower):
     if isinstance(tower, EnergyTower):
         return EnergyTowerView(tower)
+    elif isinstance(tower, LightTower):
+        return LightTowerView(tower)
     return TowerView(tower)
 
 
@@ -59,12 +61,13 @@ class EnergyTowerView(TowerView):
     def mousePressEvent(self, QMouseEvent):
         print("Press {}".format(self))
 
+
 class LightTowerView(TowerView):
     image = QImage('Resources/Images/light_tower.png').scaledToWidth(50)  # TODO: replace number to constant
 
     def __init__(self, model):
         super().__init__(model)
-        self.pixmap = QPixmap(EnergyTowerView.image)
+        self.pixmap = QPixmap(LightTowerView.image)
         self.height_pixmap = self.pixmap.height()
         self.layout = QGridLayout()
 

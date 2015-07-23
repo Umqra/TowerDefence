@@ -1,12 +1,12 @@
 import itertools
-from Controller.map_controller import MapController
+from Controller.controller_events import MapControllerEvent
 from Model.events import *
 from View.custom_layout import CustomLayout
 
 __author__ = 'umqra'
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QStackedLayout, QPen
+from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QStackedLayout, QPen, QGraphicsScene
 from View.tower_view import get_tower_view
 from View.bullet_view import get_bullet_view
 from View.cells_view import LightView, CellsView
@@ -20,12 +20,12 @@ class MapView(QWidget):
         self.setMaximumHeight(cell_size * model.height)
 
         self.model = model
-        self.controller = MapController(model)
         self.cell_size = cell_size
         self.bullets_view = []
         self.warriors_view = []
         self.towers_view = []
         self.spells_view = []
+        self.previews = []
         self.layout = CustomLayout()
         self.setLayout(self.layout)
 
@@ -46,6 +46,11 @@ class MapView(QWidget):
     def add_spell(self, spell_view):
         self.layout.add_on_top(spell_view)
         self.spells_view.append(spell_view)
+
+    def add_preview(self, preview):
+        self.layout.add_on_top(preview)
+        print(preview.model.shape)
+        self.previews.append(preview)
 
     def init_details(self):
         light_view = LightView(self.model, self.cell_size)
@@ -73,14 +78,22 @@ class MapView(QWidget):
             pass
         elif isinstance(event, CreateSpellEvent):
             pass
+        elif isinstance(event, CreatePreviewEvent):
+            self.add_preview(get_tower_view(event.item))
 
     def process_events(self, events):
         for event in events:
             if isinstance(event, CreateEvent):
                 self.create_view_from_event(event)
+            elif isinstance(event, DeletePreviewEvent):
+                for preview in self.previews:
+                    if preview.model == event.item:
+                        preview.close()
+                        self.previews.remove(preview)
+                        break
 
     def mousePressEvent(self, e):
-        if e.buttons() == Qt.RightButton:
-            self.controller.unselect()
-        else:
-            self.controller.select(e.x(), e.y())
+        self.model.controller.handle_event(MapControllerEvent(e))
+
+    def mouseMoveEvent(self, e):
+        self.model.controller.handle_event(MapControllerEvent(e))

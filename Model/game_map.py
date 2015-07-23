@@ -31,9 +31,12 @@ class GameMap:
         self.bullets = []
         self.spells = []
 
+        self.preview_items = []
+
         self.map = [[None for _ in range(width)] for _ in range(height)]
 
         self.events = []
+        self.controller = None
 
     def initialize_from_file(self, filename):
         logging.info('Initialize map from file {}'.format(filename))
@@ -85,8 +88,20 @@ class GameMap:
         logging.info('Adding view for map')
         self.views.append(view)
 
+    def can_put_item(self, item):
+        for cell in self.get_occupied_cells(item):
+            if not cell.passable:
+                return False
+        for map_item in itertools.chain(self.warriors, self.towers):
+            if item.shape.intersects_with_polygon(map_item.shape):
+                return False
+        return True
+
     def add_tower(self, tower):
-        self.process_events([CreateTowerEvent(tower)])
+        if self.can_put_item(tower):
+            self.process_events([CreateTowerEvent(tower)])
+            return True
+        return False
 
     def delete_tower(self, tower):
         self.process_events([DeleteTowerEvent(tower)])
@@ -107,7 +122,7 @@ class GameMap:
         for row in range(self.height):
             for col in range(self.width):
                 self.map[row][col].tick_init(dt)
-        for item in itertools.chain(self.warriors, self.towers):
+        for item in itertools.chain(self.warriors, self.towers, self.preview_items):
             item.tick_init(dt)
 
     def tick(self, dt):
@@ -130,7 +145,8 @@ class GameMap:
 
         self.process_events(events)
 
-    def assign_cells(self, item):
+    def get_occupied_cells(self, item):
+        cells = []
         shape = item.shape
         bounding_box = shape.get_bounding_box()
         x_l = max(int(bounding_box[0].x // MapCell.cell_size), 0)
@@ -142,8 +158,13 @@ class GameMap:
             for col in range(y_l, y_r):
                 cell_polygon = self.get_cell_shape(row, col)
                 if cell_polygon.intersects_with_polygon(shape):
-                    item.add_cell(self.map[row][col])
+                    cells.append(self.map[row][col])
                     self.map[row][col].add_item(item)
+        return cells
+
+    def assign_cells(self, item):
+        for cell in self.get_occupied_cells(item):
+            item.add_cell(cell)
 
     def process_events(self, events):
         for event in events:
@@ -160,3 +181,12 @@ class GameMap:
         row = x // MapCell.cell_size
         col = y // MapCell.cell_size
         self.map[row][col].lighting.add_impulse(LightImpulse(500))
+
+    def add_preview_item(self, preview_item):
+        self.process_events([CreatePreviewEvent(preview_item)])
+
+    def remove_preview_item(self, preview_item):
+        self.process_events([DeletePreviewEvent(preview_item)])
+
+    def set_controller(self, controller):
+        self.controller = controller

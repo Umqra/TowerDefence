@@ -5,6 +5,8 @@ from Model.towers import Tower, EnergyTower, LightTower
 from View.bullet_view import get_bullet_view
 from View.tower_view import get_tower_view, EnergyTowerView, LightTowerView
 
+from Controller.controller_events import StoreControllerEvent
+
 __author__ = 'umqra'
 
 view_by_model = {
@@ -39,6 +41,9 @@ class StoreItemView(QWidget):
         self.layout.addWidget(cost, 2, 0, QtCore.Qt.AlignCenter)
         self.setToolTip(model.description)
         self.setLayout(self.layout)
+
+    def mousePressEvent(self, e):
+        self.model.controller.handle_event(StoreControllerEvent(e, self.model.item_type()))
 
 
 class StoreView(QWidget):
