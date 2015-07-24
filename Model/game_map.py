@@ -70,7 +70,7 @@ class GameMap:
 
     def get_cell_shape(self, row, col):
         size = MapCell.cell_size
-        center = Point(size * row + size / 2, size * col + size / 2)
+        center = Point(size * col + size / 2, size * row + size / 2)
         v = Point(size / 2, size / 2)
         u = Point(size / 2, -size / 2)
         return Polygon([
@@ -90,10 +90,12 @@ class GameMap:
 
     def can_put_item(self, item):
         for cell in self.get_occupied_cells(item):
+            print(cell, cell.x, cell.y)
             if not cell.passable:
                 return False
         for map_item in itertools.chain(self.warriors, self.towers):
             if item.shape.intersects_with_polygon(map_item.shape):
+                print("intersects!")
                 return False
         return True
 
@@ -159,12 +161,12 @@ class GameMap:
                 cell_polygon = self.get_cell_shape(row, col)
                 if cell_polygon.intersects_with_polygon(shape):
                     cells.append(self.map[row][col])
-                    self.map[row][col].add_item(item)
         return cells
 
     def assign_cells(self, item):
         for cell in self.get_occupied_cells(item):
             item.add_cell(cell)
+            cell.add_item(item)
 
     def process_events(self, events):
         for event in events:
