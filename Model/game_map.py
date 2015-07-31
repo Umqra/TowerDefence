@@ -154,9 +154,6 @@ class GameMap:
         x_r = min(int(bounding_box[1].x // MapCell.cell_size) + 1, self.width)
         y_l = max(int(bounding_box[0].y // MapCell.cell_size), 0)
         y_r = min(int(bounding_box[1].y // MapCell.cell_size) + 1, self.height)
-        #print(bounding_box[0].x, bounding_box[0].y, bounding_box[1].x, bounding_box[1].y)
-        #print(x_l, x_r)
-        #print(y_l, y_r)
         for row in range(y_l, y_r):
             for col in range(x_l, x_r):
                 cell_polygon = self.get_cell_shape(row, col)
