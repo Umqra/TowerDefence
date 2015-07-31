@@ -90,7 +90,6 @@ class GameMap:
 
     def can_put_item(self, item):
         for cell in self.get_occupied_cells(item):
-            print(cell, cell.x, cell.y)
             if not cell.passable:
                 return False
         for map_item in itertools.chain(self.warriors, self.towers):
@@ -152,13 +151,16 @@ class GameMap:
         shape = item.shape
         bounding_box = shape.get_bounding_box()
         x_l = max(int(bounding_box[0].x // MapCell.cell_size), 0)
-        x_r = min(int(bounding_box[1].x // MapCell.cell_size) + 1, self.height)
+        x_r = min(int(bounding_box[1].x // MapCell.cell_size) + 1, self.width)
         y_l = max(int(bounding_box[0].y // MapCell.cell_size), 0)
-        y_r = min(int(bounding_box[1].y // MapCell.cell_size) + 1, self.width)
-
-        for row in range(x_l, x_r):
-            for col in range(y_l, y_r):
+        y_r = min(int(bounding_box[1].y // MapCell.cell_size) + 1, self.height)
+        #print(bounding_box[0].x, bounding_box[0].y, bounding_box[1].x, bounding_box[1].y)
+        #print(x_l, x_r)
+        #print(y_l, y_r)
+        for row in range(y_l, y_r):
+            for col in range(x_l, x_r):
                 cell_polygon = self.get_cell_shape(row, col)
+                print(row, col)
                 if cell_polygon.intersects_with_polygon(shape):
                     cells.append(self.map[row][col])
         return cells
@@ -178,11 +180,6 @@ class GameMap:
         row = x // MapCell.cell_size
         col = y // MapCell.cell_size
         return self.map[row][col].items
-
-    def add_impulse_at_position(self, x, y):
-        row = x // MapCell.cell_size
-        col = y // MapCell.cell_size
-        self.map[row][col].lighting.add_impulse(LightImpulse(500))
 
     def add_preview_item(self, preview_item):
         self.process_events([CreatePreviewEvent(preview_item)])

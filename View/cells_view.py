@@ -19,7 +19,7 @@ class LightView(QWidget):
             for col in range(self.model.width):
                 value = int(self.model.map[row][col].lighting.value)
 
-                qp.fillRect(row * self.cell_size, col * self.cell_size, self.cell_size, self.cell_size,
+                qp.fillRect(col * self.cell_size, row * self.cell_size, self.cell_size, self.cell_size,
                             QColor.fromRgbF(0, 0, 0, (1 - value / 255) * LightView.view_fading))
 
 
