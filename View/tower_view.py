@@ -34,7 +34,6 @@ class EnergyTowerView(TowerView):
         super().__init__(model)
         self.pixmap = QPixmap(EnergyTowerView.image)
         self.height_pixmap = self.pixmap.height()
-        self.layout = QGridLayout()
 
     def paintEvent(self, QPaintEvent):
         if not self.model.is_alive:
@@ -69,7 +68,6 @@ class LightTowerView(TowerView):
         super().__init__(model)
         self.pixmap = QPixmap(LightTowerView.image)
         self.height_pixmap = self.pixmap.height()
-        self.layout = QGridLayout()
 
     def paintEvent(self, QPaintEvent):
         if not self.model.is_alive:

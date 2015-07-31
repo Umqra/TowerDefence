@@ -93,8 +93,7 @@ class GameMap:
             if not cell.passable:
                 return False
         for map_item in itertools.chain(self.warriors, self.towers):
-            if item.shape.intersects_with_polygon(map_item.shape):
-                print("intersects!")
+            if map_item != item and item.shape.intersects_with_polygon(map_item.shape):
                 return False
         return True
 
@@ -157,7 +156,6 @@ class GameMap:
         for row in range(y_l, y_r):
             for col in range(x_l, x_r):
                 cell_polygon = self.get_cell_shape(row, col)
-                print(row, col)
                 if cell_polygon.intersects_with_polygon(shape):
                     cells.append(self.map[row][col])
         return cells

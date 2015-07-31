@@ -31,6 +31,7 @@ class CreateTowerEvent(CreateEvent):
 
     def process(self, state):
         print("Add tower ? {}".format(self.item))
+        self.item.set_gun_position(self.item.shape.get_center_of_mass())
         state.towers.append(self.item)
 
 

@@ -1,9 +1,11 @@
 from Controller.main_controller import MainController
+from Geometry.point import Point
 from Model.game_map import GameMap
 from Model.store import StoreItem, Store
 from Model.time import Time
 from Model.towers import EnergyTower, LightTower, SimpleChooser, simple_chooser
 import Model
+from Model.warriors import RandomWalker, SimpleWarrior
 
 __author__ = 'umqra'
 
@@ -19,9 +21,14 @@ class Level1(LevelLoader):
         game_state.time = Time.fromHMS(12, 0, 0)
 
         game_state.map = GameMap(10, 10, game_state)
+
+
         game_state.map.initialize_from_file('map1.txt')
 
+        Model.warriors.random_walker = RandomWalker(game_state.map)
         Model.towers.simple_chooser = SimpleChooser(game_state.map)
+
+        game_state.map.add_warrior(SimpleWarrior(Point(300, 300)))
 
         game_state.store = Store([
             StoreItem("Башенка", EnergyTower, 50,

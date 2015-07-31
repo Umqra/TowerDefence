@@ -2,6 +2,7 @@ import itertools
 from Controller.controller_events import MapControllerEvent
 from Model.events import *
 from View.custom_layout import CustomLayout
+from View.warrior_view import get_warrior_view
 
 __author__ = 'umqra'
 
@@ -49,7 +50,6 @@ class MapView(QWidget):
 
     def add_preview(self, preview):
         self.layout.add_on_top(preview)
-        print(preview.model.shape)
         self.previews.append(preview)
 
     def init_details(self):
@@ -61,8 +61,10 @@ class MapView(QWidget):
         for tower in self.model.towers:
             view = get_tower_view(tower)
             self.add_tower(view)
-#        for warrior in self.model.warriors:
-#            self.add_warrior(warrior)
+        for warrior in self.model.warriors:
+            view = get_warrior_view(warrior)
+            print(view)
+            self.add_warrior(view)
         for bullet in self.model.bullets:
             view = get_bullet_view(bullet)
             self.add_bullet(view)
@@ -75,7 +77,7 @@ class MapView(QWidget):
         elif isinstance(event, CreateBulletEvent):
             self.add_bullet(get_bullet_view(event.item))
         elif isinstance(event, CreateWarriorEvent):
-            pass
+            self.add_warrior(get_warrior_view(event.item))
         elif isinstance(event, CreateSpellEvent):
             pass
         elif isinstance(event, CreatePreviewEvent):
@@ -85,6 +87,12 @@ class MapView(QWidget):
         for event in events:
             if isinstance(event, CreateEvent):
                 self.create_view_from_event(event)
+            elif isinstance(event, DeleteWarriorEvent):
+                for warrior in self.warriors_view:
+                    if warrior.model == event.item:
+                        warrior.close()
+                        self.warriors_view.remove(warrior)
+                        break
             elif isinstance(event, DeletePreviewEvent):
                 for preview in self.previews:
                     if preview.model == event.item:

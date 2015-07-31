@@ -9,6 +9,7 @@ class Time:
 
     def __init__(self, value=0):
         self.value = value
+        self.day = 0
         self._coefficient = 2000
 
     @staticmethod
@@ -25,4 +26,6 @@ class Time:
 
     def tick(self, dt):
         self.value += dt * self._coefficient
-        self.value %= Time.total_seconds
+        if self.value >= Time.total_seconds:
+            self.day += 1
+            self.value -= Time.total_seconds

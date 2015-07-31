@@ -130,8 +130,13 @@ class EnergyTower(RechargeTower):
     def attack(self):
         if self.target is None:
             return
+        average_impulse = 0
+        for cell in self.occupied_cells:
+            average_impulse += cell.lighting.value
+        average_impulse /= len(self.occupied_cells)
+        cur_damage = self.damage * (average_impulse / 100)
         return [CreateBulletEvent(
-            EnergyBullet(self.gun_position, self.target, self.fraction, self.damage))]
+            EnergyBullet(self.gun_position, self.target, self.fraction, cur_damage))]
 
 
 light_tower_default_shape = Polygon([
