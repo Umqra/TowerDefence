@@ -1,4 +1,4 @@
-from PyQt4.QtGui import QWidget, QPainter
+from PyQt4.QtGui import QWidget, QPainter, QImage, QPixmap
 from Model.warriors import SimpleWarrior
 
 __author__ = 'umqra'
@@ -11,6 +11,7 @@ def get_warrior_view(model):
 class WarriorView(QWidget):
     def __init__(self, model):
         super().__init__()
+        self.state = 0
         self.model = model
 
     def paintEvent(self, QPaintEvent):
@@ -18,14 +19,31 @@ class WarriorView(QWidget):
 
 
 class SimpleWarriorView(WarriorView):
+    images = [
+        QImage('Resources/Images/warrior_0').scaledToWidth(30),
+        QImage('Resources/Images/warrior_0').scaledToWidth(30),
+        QImage('Resources/Images/warrior_0').scaledToWidth(30),
+        QImage('Resources/Images/warrior_1').scaledToWidth(30),
+        QImage('Resources/Images/warrior_1').scaledToWidth(30),
+        QImage('Resources/Images/warrior_1').scaledToWidth(30),
+        QImage('Resources/Images/warrior_2').scaledToWidth(30),
+        QImage('Resources/Images/warrior_2').scaledToWidth(30),
+        QImage('Resources/Images/warrior_2').scaledToWidth(30),
+        QImage('Resources/Images/warrior_3').scaledToWidth(30),
+        QImage('Resources/Images/warrior_3').scaledToWidth(30),
+        QImage('Resources/Images/warrior_3').scaledToWidth(30),
+    ]
+    count_states = 12
+
     def __init__(self, model):
         super().__init__(model)
 
     def paintEvent(self, QPaintEvent):
+        if not self.model.is_alive:
+            self.close()
         qp = QPainter()
         qp.begin(self)
-        center = self.model.shape.get_center_of_mass()
-        size = 20
-        x = int(center.x - size / 2)
-        y = int(center.y - size / 2)
-        qp.drawEllipse(x, y, size, size)
+        pixmap = QPixmap(SimpleWarriorView.images[self.state])
+        bbox = self.model.shape.get_bounding_box()
+        qp.drawPixmap(bbox[0].x, bbox[0].y, pixmap)
+        self.state = (self.state + 1) % SimpleWarriorView.count_states

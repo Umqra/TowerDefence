@@ -15,6 +15,7 @@ from Model.map_cell import create_cell, MapCell
 logging.config.fileConfig('logging.conf')
 
 
+
 class MapFormatError(Exception):
     pass
 

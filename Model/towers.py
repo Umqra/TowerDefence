@@ -164,3 +164,7 @@ class LightTower(RechargeTower):
         for cell in self.occupied_cells:
             cell.add_impulse(LightImpulse(self.impulse_force))
         self.time_to_attack = self.recharge_time
+
+
+class Fortress(Tower):
+    pass

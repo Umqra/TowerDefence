@@ -5,7 +5,7 @@ from Model.store import StoreItem, Store
 from Model.time import Time
 from Model.towers import EnergyTower, LightTower, SimpleChooser, simple_chooser
 import Model
-from Model.warriors import RandomWalker, SimpleWarrior
+from Model.warriors import BFSWalker, SimpleWarrior
 
 __author__ = 'umqra'
 
@@ -25,10 +25,12 @@ class Level1(LevelLoader):
 
         game_state.map.initialize_from_file('map1.txt')
 
-        Model.warriors.random_walker = RandomWalker(game_state.map)
+        Model.warriors.random_walker = BFSWalker(game_state.map)
         Model.towers.simple_chooser = SimpleChooser(game_state.map)
 
-        game_state.map.add_warrior(SimpleWarrior(Point(300, 300)))
+        #game_state.map.add_warrior(SimpleWarrior(Point(380, 80)))
+        game_state.map.add_warrior(SimpleWarrior(Point(400, 100)))
+        #game_state.map.add_warrior(SimpleWarrior(Point(420, 120)))
 
         game_state.store = Store([
             StoreItem("Башенка", EnergyTower, 50,
