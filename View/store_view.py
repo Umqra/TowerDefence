@@ -1,9 +1,9 @@
 from PyQt4 import QtCore
 from PyQt4.QtGui import QWidget, QGridLayout, QPainter, QPixmap, QPushButton, QLabel
 from Model.bullets import Bullet
-from Model.towers import Tower, EnergyTower, LightTower
+from Model.towers import Tower, EnergyTower, LightTower, JustTower
 from View.bullet_view import get_bullet_view
-from View.tower_view import get_tower_view, EnergyTowerView, LightTowerView
+from View.tower_view import get_tower_view, EnergyTowerView, LightTowerView, JustTowerView
 
 from Controller.controller_events import StoreControllerEvent
 
@@ -11,7 +11,8 @@ __author__ = 'umqra'
 
 view_by_model = {
     EnergyTower: EnergyTowerView,
-    LightTower: LightTowerView
+    LightTower: LightTowerView,
+    JustTower: JustTowerView,
 }
 
 

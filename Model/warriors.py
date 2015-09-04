@@ -5,6 +5,7 @@ from Geometry.point import Point
 from Geometry.polygon import Polygon
 from Model.events import DeleteWarriorEvent
 from Model.game_fraction import GameFraction
+from Model.light import Lighting
 from Model.map_cell import MapCell
 
 __author__ = 'umqra'
@@ -68,7 +69,12 @@ class Warrior:
         self.manipulator.run(self, dt)
 
     def attack(self, item):
-        item.damaged(self.damage)
+        average_impulse = 0
+        for cell in self.occupied_cells:
+            average_impulse += cell.lighting.value
+        average_impulse /= len(self.occupied_cells)
+        cur_damage = self.damage * (Lighting.max_value - average_impulse) / (Lighting.max_value * 0.5)
+        item.damaged(cur_damage)
 
 
 def restore_path(start, end, parents):

@@ -25,12 +25,12 @@ class BulletView(QWidget):
 
 class EnergyBulletView(BulletView):
     images = [
-        QImage('Resources/Images/energy_bullet_0').scaledToWidth(25),
-        QImage('Resources/Images/energy_bullet_0').scaledToWidth(25),
-        QImage('Resources/Images/energy_bullet_1').scaledToWidth(25),
-        QImage('Resources/Images/energy_bullet_1').scaledToWidth(25),
-        QImage('Resources/Images/energy_bullet_2').scaledToWidth(25),
-        QImage('Resources/Images/energy_bullet_2').scaledToWidth(25),
+        QImage('Resources/Images/energy_bullet_0').scaledToWidth(EnergyBullet.bounding_box),
+        QImage('Resources/Images/energy_bullet_0').scaledToWidth(EnergyBullet.bounding_box),
+        QImage('Resources/Images/energy_bullet_1').scaledToWidth(EnergyBullet.bounding_box),
+        QImage('Resources/Images/energy_bullet_1').scaledToWidth(EnergyBullet.bounding_box),
+        QImage('Resources/Images/energy_bullet_2').scaledToWidth(EnergyBullet.bounding_box),
+        QImage('Resources/Images/energy_bullet_2').scaledToWidth(EnergyBullet.bounding_box),
     ]
 
     count_states = 6

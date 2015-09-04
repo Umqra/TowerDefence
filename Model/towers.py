@@ -68,7 +68,8 @@ class Tower:
         self.gun_position = pos
 
     def choose_target(self):
-        self.target = self.target_chooser.choose(self)
+        if self.target_chooser is not None:
+            self.target = self.target_chooser.choose(self)
 
     def tick_init(self, dt):
         self.occupied_cells.clear()
@@ -134,7 +135,7 @@ class EnergyTower(RechargeTower):
         for cell in self.occupied_cells:
             average_impulse += cell.lighting.value
         average_impulse /= len(self.occupied_cells)
-        cur_damage = self.damage * (average_impulse / 100)
+        cur_damage = self.damage * (average_impulse / (Lighting.max_value * 0.5))
         return [CreateBulletEvent(
             EnergyBullet(self.gun_position, self.target, self.fraction, cur_damage))]
 
@@ -166,5 +167,13 @@ class LightTower(RechargeTower):
         self.time_to_attack = self.recharge_time
 
 
+class JustTower(Tower):
+    def __init__(self, fraction=GameFraction.Light):
+        shape = copy.deepcopy(energy_tower_default_shape)
+        super().__init__(shape, None, fraction, 100)
+
+
 class Fortress(Tower):
-    pass
+    def __init__(self, fraction=GameFraction.Light):
+        shape = copy.deepcopy(energy_tower_default_shape)
+        super().__init__(shape, None, fraction, 100)

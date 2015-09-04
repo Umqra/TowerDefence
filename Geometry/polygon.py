@@ -40,7 +40,6 @@ class Polygon:
         return vectors
 
     def contain_point(self, P: Point):
-        l = len(self.shape)
         count_intersections = 0
         for side in self.get_side_segments():
             l = side.based_line

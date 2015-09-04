@@ -56,6 +56,7 @@ class Bullet:
 
 
 class EnergyBullet(Bullet):
+    bounding_box = 25
     def __init__(self, position, target, fraction, damage):
-        shape = Geometry.geometry_operations.get_right_polygon(position, damage, 6)
-        super().__init__(shape, target, fraction, damage, damage * 4)
+        shape = Geometry.geometry_operations.get_right_polygon(position, EnergyBullet.bounding_box / 2, 6)
+        super().__init__(shape, target, fraction, damage, 100)
