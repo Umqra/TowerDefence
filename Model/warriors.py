@@ -178,6 +178,8 @@ simple_warrior_shape = Polygon([
 
 class SimpleWarrior(Warrior):
     def __init__(self, position, direction=None):
+        if position is None:
+            position = Point()
         shape = copy.deepcopy(simple_warrior_shape)
         shape.move(position)
         if direction is None:

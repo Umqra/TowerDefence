@@ -44,7 +44,7 @@ class StoreItemView(QWidget):
         self.setLayout(self.layout)
 
     def mousePressEvent(self, e):
-        self.model.controller.handle_event(StoreControllerEvent(e, self.model.item_type()))
+        self.model.controller.handle_event(StoreControllerEvent(e, self.model.item_type(), self.model))
 
 
 class StoreView(QWidget):

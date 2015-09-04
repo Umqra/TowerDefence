@@ -6,6 +6,7 @@ from Model.time import Time
 from Model.towers import EnergyTower, LightTower, SimpleChooser, simple_chooser, JustTower, Fortress
 import Model
 from Model.warriors import BFSWalker, SimpleWarrior
+from Model.wave import Wave
 
 __author__ = 'umqra'
 
@@ -17,7 +18,7 @@ class LevelLoader:
 class Level1(LevelLoader):
     @staticmethod
     def init_game(game_state):
-        game_state.money = 100
+        game_state.money = 200
         game_state.time = Time.fromHMS(12, 0, 0)
 
         game_state.map = GameMap(10, 10, game_state)
@@ -32,9 +33,17 @@ class Level1(LevelLoader):
         Model.warriors.random_walker = BFSWalker(game_state.map)
         Model.towers.simple_chooser = SimpleChooser(game_state.map)
 
-        # game_state.map.add_warrior(SimpleWarrior(Point(380, 80)))
-        game_state.map.add_warrior(SimpleWarrior(Point(400, 100)))
-        # game_state.map.add_warrior(SimpleWarrior(Point(420, 120)))
+        game_state.waves.append(Wave(
+            game_state, Time.fromDHMS(0, 12, 0, 0),
+            [SimpleWarrior, SimpleWarrior, SimpleWarrior],
+            [Point(400, 100), Point(350, 50)]
+        ))
+
+        game_state.waves.append(Wave(
+            game_state, Time.fromDHMS(0, 23, 0, 0),
+            [SimpleWarrior, SimpleWarrior, SimpleWarrior],
+            [Point(400, 100), Point(350, 50)]
+        ))
 
         game_state.store = Store([
             StoreItem("Башенка", EnergyTower, 50,

@@ -12,6 +12,7 @@ class MapControllerEvent(ControllerEvent):
 
 
 class StoreControllerEvent(ControllerEvent):
-    def __init__(self, mouse_event, selected_item):
+    def __init__(self, mouse_event, selected_item, store_info):
         super().__init__(mouse_event)
         self.selected_item = selected_item
+        self.store_info = store_info

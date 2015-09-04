@@ -13,10 +13,31 @@ class Time:
         self._coefficient = 2000
 
     @staticmethod
+    def fromDHMS(day, h, m, s):
+        result = Time.fromHMS(h, m, s)
+        result.day = day
+        return result
+
+    @staticmethod
     def fromHMS(h, m, s):
         return Time(h * Time.minutes * Time.seconds +
                     m * Time.seconds +
                     s)
+
+    def __eq__(self, other):
+        return (self.day, self.value) == (other.day, other.value)
+
+    def __le__(self, other):
+        return (self.day, self.value) <= (other.day, other.value)
+
+    def __ge__(self, other):
+        return (self.day, self.value) >= (other.day, other.value)
+
+    def __lt__(self, other):
+        return (self.day, self.value) < (other.day, other.value)
+
+    def __gt__(self, other):
+        return (self.day, self.value) > (other.day, other.value)
 
     def time_faster(self, times):
         self._coefficient *= times

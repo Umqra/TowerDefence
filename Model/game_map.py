@@ -1,6 +1,9 @@
 from Geometry.point import Point
 from Geometry.polygon import Polygon
+from Model.bullets import Bullet
 from Model.light import LightImpulse
+from Model.towers import Tower
+from Model.warriors import Warrior
 
 __author__ = 'umqra'
 import re
@@ -97,6 +100,14 @@ class GameMap:
             if map_item != item and item.shape.intersects_with_polygon(map_item.shape):
                 return False
         return True
+
+    def add_item(self, item):
+        if isinstance(item, Tower):
+            self.add_tower(item)
+        elif isinstance(item, Bullet):
+            self.add_bullet(item)
+        elif isinstance(item, Warrior):
+            self.add_warrior(item)
 
     def add_tower(self, tower):
         if self.can_put_item(tower):

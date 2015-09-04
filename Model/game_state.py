@@ -17,6 +17,7 @@ class GameState:
     def __init__(self):
         self.map = None
         self.views = []
+        self.waves = []
         self.time = Time()
         self.store = Store()
         self.money = 0
@@ -28,6 +29,10 @@ class GameState:
         return 255 - abs(mid_value - self.time.value) / max_value * 255
 
     def tick(self, dt):
+        if self.waves:
+            self.waves[0].tick(dt)
+            if self.waves[0].empty():
+                self.waves = self.waves[1:]
         self.map.tick(dt)
         self.time.tick(dt)
 
@@ -41,3 +46,12 @@ class GameState:
         self.map.set_controller(controller)
         self.store.set_controller(controller)
         self.controller = controller
+
+    def buy_item(self, item, store_info):
+        if self.money < store_info.cost:
+            return False
+        if not self.map.can_put_item(item):
+            return False
+        self.money -= store_info.cost
+        self.map.add_item(item)
+        return True
