@@ -9,9 +9,12 @@ class Time:
     seconds_in_hour = minutes * seconds
 
     def __init__(self, value=0):
-        self.value = value
-        self.day = 0
+        self.value = value % Time.total_seconds
+        self.day = int(value // Time.total_seconds)
         self._coefficient = 2000
+
+    def get_cur_seconds(self):
+        return self.day * Time.total_seconds + self.value
 
     @staticmethod
     def fromDHMS(day, h, m, s):
@@ -39,6 +42,9 @@ class Time:
 
     def __gt__(self, other):
         return (self.day, self.value) > (other.day, other.value)
+
+    def __sub__(self, other):
+        return Time(self.get_cur_seconds() - other.get_cur_seconds())
 
     def time_faster(self, times):
         self._coefficient *= times
