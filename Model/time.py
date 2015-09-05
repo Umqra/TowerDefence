@@ -6,6 +6,7 @@ class Time:
     minutes = 60
     seconds = 60
     total_seconds = hours * minutes * seconds
+    seconds_in_hour = minutes * seconds
 
     def __init__(self, value=0):
         self.value = value
