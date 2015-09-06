@@ -6,26 +6,40 @@ from Geometry.segment import Segment
 __author__ = 'umqra'
 
 
+def is_point_in_bounding_box(P, bbox):
+    return bbox[0].x <= P.x <= bbox[1].x and bbox[0].y <= P.y <= bbox[1].y
+
+
+def intersects_bounding_boxes(a, b):
+    return (max(a[0].x, b[0].x) <= min(a[1].x, b[1].x) and
+            max(a[0].y, b[0].y) <= min(a[1].y, b[1].y))
+
+
 class Polygon:
     def __init__(self, shape):
         self.shape = shape
+        self._calc_bounding_box()
 
     def move(self, direction):
         for index in range(len(self.shape)):
             self.shape[index] += direction
+        self._calc_bounding_box()
 
     def pull(self, k):
         for index in range(len(self.shape)):
             self.shape[index] *= k
+        self._calc_bounding_box()
 
     def rotate_around_origin(self, angle):
         for index in range(len(self.shape)):
             self.shape[index] = self.shape[index].rotate(angle)
+        self._calc_bounding_box()
 
     def rotate_around_point(self, P: Point, angle):
         self.move(P)
         self.rotate_around_origin(angle)
         self.move(-P)
+        self._calc_bounding_box()
 
     def get_side_segments(self):
         l = len(self.shape)
@@ -40,6 +54,9 @@ class Polygon:
         return vectors
 
     def contain_point(self, P: Point):
+        if not is_point_in_bounding_box(P, self.get_bounding_box()):
+            return False
+
         count_intersections = 0
         for side in self.get_side_segments():
             l = side.based_line
@@ -65,14 +82,14 @@ class Polygon:
         return self.contain_point((segment.A + segment.B) / 2.)
 
     def intersects_with_polygon(self, other):
+        if not intersects_bounding_boxes(self.get_bounding_box(), other.get_bounding_box()):
+            return False
         for p in other.shape:
             if self.contain_point(p):
                 return True
         for p in self.shape:
             if other.contain_point(p):
                 return True
-        self_l = len(self.shape)
-        other_l = len(other.shape)
         for self_side in self.get_side_segments():
             for other_side in other.get_side_segments():
                 if self_side.intersect_with_segment(other_side) is not None:
@@ -106,7 +123,7 @@ class Polygon:
             distance = min(distance, s.dist_from_point(P))
         return distance
 
-    def get_bounding_box(self):
+    def _calc_bounding_box(self):
         minX, minY = self.shape[0].x, self.shape[0].y
         maxX, maxY = self.shape[0].x, self.shape[0].y
         for p in self.shape:
@@ -115,7 +132,10 @@ class Polygon:
 
             minY = min(minY, p.y)
             maxY = max(maxY, p.y)
-        return Point(minX, minY), Point(maxX, maxY)
+        self._bounding_box = (Point(minX, minY), Point(maxX, maxY))
+
+    def get_bounding_box(self):
+        return self._bounding_box
 
     def get_center_of_mass(self):
         sum_length = 0

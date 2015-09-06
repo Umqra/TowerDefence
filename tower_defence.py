@@ -44,7 +44,7 @@ class MapTest(QtGui.QWidget):
 
     def __init__(self):
         super().__init__()
-        self.setFixedSize(800, 800)
+        self.setFixedSize(900, 800)
         state = GameState()
 
         state.initialize_with_loader(Level1)

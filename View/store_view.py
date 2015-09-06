@@ -3,6 +3,7 @@ from PyQt4.QtGui import QWidget, QGridLayout, QPainter, QPixmap, QPushButton, QL
 from Model.bullets import Bullet
 from Model.towers import Tower, EnergyTower, LightTower, JustTower
 from View.bullet_view import get_bullet_view
+from View.custom_label import CustomLabel
 from View.tower_view import get_tower_view, EnergyTowerView, LightTowerView, JustTowerView
 
 from Controller.controller_events import StoreControllerEvent
@@ -28,14 +29,14 @@ class StoreItemView(QWidget):
         self.layout = QGridLayout()
         self.layout.setVerticalSpacing(2)
 
-        title = QLabel(model.title)
+        title = CustomLabel(model.title)
 
         preview = QLabel()
         preview.setFixedHeight(self.view.image.height())
         preview.setFixedWidth(self.view.image.width())
         preview.setPixmap(QPixmap(self.view.image))
 
-        cost = QLabel("{}$".format(model.cost))
+        cost = CustomLabel("{}$".format(model.cost))
 
         self.layout.addWidget(title, 0, 0, QtCore.Qt.AlignCenter)
         self.layout.addWidget(preview, 1, 0, QtCore.Qt.AlignCenter)

@@ -1,10 +1,19 @@
-from PyQt4.QtGui import QWidget, QPainter, QGridLayout, QLabel
+from enum import Enum
+from PyQt4.QtGui import QWidget, QPainter, QGridLayout, QLabel, QFontDatabase, QFont
+from View.custom_label import CustomLabel
 
 __author__ = 'umqra'
 
 
+class LoaderType(Enum):
+    TextOnly = 1
+    LoaderOnly = 2
+    TextAndLoader = 3
+
+
 class LoaderStyle:
-    def __init__(self, height, title, background_color, foreground_color, border_color):
+    def __init__(self, loader_type, height, title, background_color, foreground_color, border_color):
+        self.loader_type = loader_type
         self.height = height
         self.title = title
         self.background_color = background_color
@@ -27,15 +36,23 @@ class LoaderWidget(QLabel):
         self.layout = QGridLayout()
         self.layout.setVerticalSpacing(0)
 
-        label_widget = LoaderLabel("{} : {{}} / {}".format(style_info.title, max_value), getter)
-        strip_widget = LoaderStrip(getter, min_value, max_value, style_info.foreground_color)
+        row_id = 0
+        if style_info.loader_type != LoaderType.LoaderOnly:
+            if style_info.loader_type == LoaderType.TextAndLoader:
+                label_widget = LoaderLabel("{} : {{}} / {}".format(style_info.title, max_value), getter)
+            else:
+                label_widget = LoaderLabel("{} : {{}}".format(style_info.title), getter)
+            self.layout.addWidget(label_widget, row_id, 0)
+            row_id += 1
+        if style_info.loader_type != LoaderType.TextOnly:
+            strip_widget = LoaderStrip(getter, min_value, max_value, style_info.foreground_color)
+            self.layout.addWidget(strip_widget, row_id, 0)
+            row_id += 1
 
-        self.layout.addWidget(label_widget, 0, 0)
-        self.layout.addWidget(strip_widget, 1, 0)
         self.setLayout(self.layout)
 
 
-class LoaderLabel(QLabel):
+class LoaderLabel(CustomLabel):
     def __init__(self, format, getter):
         super().__init__()
         self.format = format
