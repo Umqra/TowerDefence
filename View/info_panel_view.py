@@ -20,7 +20,7 @@ class InfoPanelView(QWidget):
                                                        QColor.fromRgb(0, 0, 0))),
                               1, 0)
 
-        self.layout.addWidget(LoaderWidget(lambda: int(self.state.time.value // self.state.time.seconds_in_hour), 0, 24,
+        self.layout.addWidget(LoaderWidget(lambda: int(self.state.time.value // self.state.time.seconds_in_hour()), 0, 24,
                                            LoaderStyle(LoaderType.TextAndLoader, 60, "Hour",
                                                        QColor.fromRgb(255, 255, 255),
                                                        QColor.fromRgb(41, 171, 135),
@@ -28,7 +28,7 @@ class InfoPanelView(QWidget):
                               2, 0)
 
         self.layout.addWidget(LoaderWidget(lambda: round(
-            max((self.state.waves[0].start_time - self.state.time).get_cur_seconds(), 0) / Time.total_seconds,
+            max((self.state.waves[0].start_time - self.state.time).get_cur_seconds(), 0) / Time.max_total_seconds(),
             2) if self.state.waves else 0, 0, 10,
                                            LoaderStyle(LoaderType.TextOnly, 60, "Days to wave",
                                                        QColor.fromRgb(255, 255, 255),

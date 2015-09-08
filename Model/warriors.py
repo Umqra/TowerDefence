@@ -97,7 +97,7 @@ class BFSWalker:
         row = int(center.y // MapCell.cell_size)
         col = int(center.x // MapCell.cell_size)
 
-        self.paths[warrior] = self.path_between_cells((row, col), (self.map.height - 1, 0))
+        self.paths[warrior] = self.path_between_cells((row, col), self.map.fortress_cell)
 
     def remove_warrior(self, warrior):
         self.warriors.remove(warrior)
@@ -107,6 +107,8 @@ class BFSWalker:
         row = int(center.y // MapCell.cell_size)
         col = int(center.x // MapCell.cell_size)
         path = self.paths[warrior]
+        if not path:
+            return
         if path[0] == (row, col):
             path.pop(0)
         if path:
@@ -121,7 +123,7 @@ class BFSWalker:
         if not self.map.can_put_item(warrior):
             warrior.move_by(-direction, dt)
             if path:
-                self.paths[warrior] = self.path_between_cells((row, col), (self.map.height - 1, 0), {path[0]})
+                self.paths[warrior] = self.path_between_cells((row, col), self.map.fortress_cell, {path[0]})
 
     def path_between_cells(self, start, end, blocked=None):
         q = [start]
@@ -166,6 +168,7 @@ class BFSWalker:
         if distance < warrior.damage_radius:
             warrior.attack(item)
 
+
 random_walker = None
 
 simple_warrior_shape = Polygon([
@@ -184,4 +187,5 @@ class SimpleWarrior(Warrior):
         shape.move(position)
         if direction is None:
             direction = Point(-1, 1)
-        super().__init__(shape, random_walker, GameFraction.Dark, 100, 20, 0.05, 25, direction)
+        # def __init__(self, shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
+        super().__init__(shape, random_walker, GameFraction.Dark, 100, 40, 0.05, 25, direction)

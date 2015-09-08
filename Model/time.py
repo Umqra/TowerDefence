@@ -2,19 +2,39 @@ __author__ = 'umqra'
 
 
 class Time:
-    hours = 24
-    minutes = 60
-    seconds = 60
-    total_seconds = hours * minutes * seconds
-    seconds_in_hour = minutes * seconds
+    _hours = 24
+    _minutes = 60
+    _seconds = 60
+    _total_seconds = _hours * _minutes * _seconds
+    _seconds_in_hour = _minutes * _seconds
 
     def __init__(self, value=0):
-        self.value = value % Time.total_seconds
-        self.day = int(value // Time.total_seconds)
+        self.value = value % Time._total_seconds
+        self.day = int(value // Time._total_seconds)
         self._coefficient = 2000
 
+    @staticmethod
+    def max_total_seconds():
+        return Time._total_seconds
+
+    @staticmethod
+    def seconds_in_hour():
+        return Time._seconds_in_hour
+
+    @property
+    def hour(self):
+        return self.value // (Time._minutes * Time._seconds)
+
+    @property
+    def minutes(self):
+        return (self.value // Time._seconds) % 60
+
+    @property
+    def seconds(self):
+        return self.value % 60
+
     def get_cur_seconds(self):
-        return self.day * Time.total_seconds + self.value
+        return self.day * Time._total_seconds + self.value
 
     @staticmethod
     def fromDHMS(day, h, m, s):
@@ -24,8 +44,8 @@ class Time:
 
     @staticmethod
     def fromHMS(h, m, s):
-        return Time(h * Time.minutes * Time.seconds +
-                    m * Time.seconds +
+        return Time(h * Time._minutes * Time._seconds +
+                    m * Time._seconds +
                     s)
 
     def __eq__(self, other):
@@ -54,6 +74,6 @@ class Time:
 
     def tick(self, dt):
         self.value += dt * self._coefficient
-        if self.value >= Time.total_seconds:
+        if self.value >= Time._total_seconds:
             self.day += 1
-            self.value -= Time.total_seconds
+            self.value -= Time._total_seconds

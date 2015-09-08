@@ -2,7 +2,7 @@ from Geometry.point import Point
 from Geometry.polygon import Polygon
 from Model.bullets import Bullet
 from Model.light import LightImpulse
-from Model.towers import Tower
+from Model.towers import Tower, Fortress
 from Model.warriors import Warrior
 
 __author__ = 'umqra'
@@ -31,6 +31,8 @@ class GameMap:
         self.views = []
 
         self.towers = []
+        self.fortress = None
+
         self.warriors = []
         self.bullets = []
         self.spells = []
@@ -41,6 +43,15 @@ class GameMap:
 
         self.events = []
         self.controller = None
+
+    @property
+    def fortress_health(self):
+        return self.fortress.health if self.fortress else 0
+
+    @property
+    def fortress_cell(self):
+        cell = self.get_occupied_cells(self.fortress)[0]
+        return (cell.x, cell.y) if self.fortress else (self.height - 1, 0)
 
     def initialize_from_file(self, filename):
         logging.info('Initialize map from file {}'.format(filename))
@@ -111,6 +122,8 @@ class GameMap:
 
     def add_tower(self, tower):
         if self.can_put_item(tower):
+            if isinstance(tower, Fortress):
+                self.fortress = tower
             self.process_events([CreateTowerEvent(tower)])
             return True
         return False

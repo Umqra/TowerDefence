@@ -2,12 +2,10 @@ from datetime import datetime
 from PyQt4.QtGui import QColor, QPixmap, QImage, QGridLayout
 from PyQt4.QtCore import QPointF
 import math
-from Controller.map_controller import MapController
 from Geometry.line import Line
 from Geometry.point import Point
 from Geometry.polygon import Polygon
 from Geometry.segment import Segment
-from Model.bullets import Bullet, EnergyBullet
 from Model.game_fraction import GameFraction
 from Model.game_map import GameMap
 from Model.game_state import GameState

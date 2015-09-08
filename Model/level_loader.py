@@ -1,6 +1,7 @@
 from Controller.main_controller import MainController
 from Geometry.point import Point
 from Model.game_map import GameMap
+from Model.game_state import NotificationCreator, NotificationEvent
 from Model.store import StoreItem, Store
 from Model.time import Time
 from Model.towers import EnergyTower, LightTower, SimpleChooser, simple_chooser, JustTower, Fortress
@@ -36,7 +37,7 @@ class Level1(LevelLoader):
         game_state.waves.append(Wave(
             game_state, Time.fromDHMS(0, 12, 0, 0),
             [SimpleWarrior, SimpleWarrior, SimpleWarrior],
-            [Point(400, 100), Point(350, 50)]
+            [Point(400, 100), Point(300, 30), Point(350, 20)]
         ))
 
         game_state.waves.append(Wave(
@@ -53,5 +54,16 @@ class Level1(LevelLoader):
             StoreItem("Просто башня", JustTower, 10,
                       "Ты нищеброд и у тебя не хватает денег даже на Башенку?! Бери 'Просто башню'! Пусть постоит")
         ])
+
+        creator = NotificationCreator(game_state)
+        creator.add_event(NotificationEvent(lambda: True, "Nothing happens..."))
+        creator.add_event(NotificationEvent(lambda: game_state.money < 50, "Money is tight"))
+        creator.add_event(NotificationEvent(lambda: game_state.map.fortress_health < 20, "Castle is in danger!"))
+        creator.add_event(NotificationEvent(lambda: game_state.time.hour == 0, "New day starts!"))
+        creator.add_event(NotificationEvent(lambda: game_state.time.hour == 12, "It is noon"))
+
+
+        game_state.notification_creator = creator
+
         controller = MainController(game_state)
         game_state.set_controller(controller)
