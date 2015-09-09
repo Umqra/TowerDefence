@@ -26,6 +26,10 @@ class Time:
         return self.value // (Time._minutes * Time._seconds)
 
     @property
+    def total_hours(self):
+        return int(self.hour + self.day * Time._total_seconds)
+
+    @property
     def minutes(self):
         return (self.value // Time._seconds) % 60
 
