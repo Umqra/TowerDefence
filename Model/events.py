@@ -115,6 +115,7 @@ class DeleteWarriorEvent(DeleteEvent):
         super().__init__(item)
 
     def process(self, state):
+        state.state.money += 30
         state.warriors.remove(self.item)
 
 

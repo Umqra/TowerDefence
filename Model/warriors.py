@@ -187,5 +187,5 @@ class SimpleWarrior(Warrior):
         shape.move(position)
         if direction is None:
             direction = Point(-1, 1)
-        # def __init__(self, shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
+        #               (shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
         super().__init__(shape, random_walker, GameFraction.Dark, 100, 40, 0.05, 25, direction)

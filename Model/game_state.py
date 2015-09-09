@@ -38,7 +38,9 @@ class LevelFormatError(Exception):
 
 
 class GameState:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
+
         self.map = None
         self.views = []
         self.waves = []
@@ -48,6 +50,10 @@ class GameState:
         self.controller = None
         self.notification = "New game starts!"
         self.notification_creator = None
+        self.pause = False
+
+    def restart(self):
+        self.game.load_level(self.loader)
 
     def push_notification(self, text):
         self.notification = text
@@ -60,6 +66,8 @@ class GameState:
         return 255 - abs(mid_value - self.time.value) / max_value * 255
 
     def tick(self, dt):
+        if self.pause:
+            return
         if self.waves:
             self.waves[0].tick(dt)
             if self.waves[0].empty():
@@ -73,6 +81,7 @@ class GameState:
         self.views.append(view)
 
     def initialize_with_loader(self, loader):
+        self.loader = loader
         loader.init_game(self)
 
     def set_controller(self, controller):

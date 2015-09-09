@@ -170,10 +170,19 @@ class LightTower(RechargeTower):
 class JustTower(Tower):
     def __init__(self, fraction=GameFraction.Light):
         shape = copy.deepcopy(energy_tower_default_shape)
-        super().__init__(shape, None, fraction, 100)
+        super().__init__(shape, None, fraction, 10)
 
 
 class Fortress(Tower):
     def __init__(self, fraction=GameFraction.Light):
         shape = copy.deepcopy(energy_tower_default_shape)
-        super().__init__(shape, None, fraction, 100)
+        self.last_day = -1
+        super().__init__(shape, simple_chooser, fraction, 100)
+
+    def tick(self, dt):
+        if not self.is_alive:
+            return [DeleteTowerEvent(self)]
+        state = self.target_chooser.map.state
+        if state.time.hour == 0 and self.last_day != state.time.day:
+            state.money += 50
+            self.last_day = state.time.day

@@ -36,28 +36,44 @@ def parse_arguments():
     return parser.parse_args()
 
 
-class MapTest(QtGui.QWidget):
+def clear_layout(layout):
+    if layout != None:
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget() is not None:
+                child.widget().deleteLater()
+            elif child.layout() is not None:
+                clear_layout(child.layout())
+
+
+class Game(QtGui.QWidget):
     fps = 40
     interval = 1000. / fps
 
     def __init__(self):
         super().__init__()
-        self.setFixedSize(900, 800)
-        state = GameState()
-
-        state.initialize_with_loader(Level1)
-
-        self.state = state
-
+        self.setFixedSize(1000, 800)
         self.layout = QGridLayout()
-        self.layout.addWidget(StateView(state))
-
         self.setLayout(self.layout)
+        self.state = None
+        self.state_view = None
+        self.load_level(Level1)
 
         self.timer = QtCore.QBasicTimer()
-        self.timer.start(MapTest.interval, self)
+        self.timer.start(Game.interval, self)
+
+
+    def load_level(self, level_loader):
+        self.reset_game()
+        self.state = GameState(self)
+        self.state.initialize_with_loader(level_loader)
+        self.state_view = StateView(self.state)
+        self.layout.addWidget(self.state_view)
 
         self.setMouseTracking(True)
+
+    def reset_game(self):
+        clear_layout(self.layout)
 
     def setMouseTracking(self, flag):
         def recursive_set(parent):
@@ -67,17 +83,20 @@ class MapTest(QtGui.QWidget):
                 except:
                     pass
                 recursive_set(child)
+
         QtGui.QWidget.setMouseTracking(self, flag)
         recursive_set(self)
 
     def timerEvent(self, e):
-        self.state.tick(MapTest.interval / 1000)
+        if self.state.pause:
+            return
+        self.state.tick(Game.interval / 1000)
         self.repaint()
 
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    widget = MapTest()
+    widget = Game()
     widget.show()
     app.exec_()
 

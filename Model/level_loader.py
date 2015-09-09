@@ -25,11 +25,6 @@ class Level1(LevelLoader):
         game_state.map = GameMap(10, 10, game_state)
 
         game_state.map.initialize_from_file('map1.txt')
-        fortress_position = game_state.map.get_cell_shape(game_state.map.height - 1,
-                                                          0).get_center_of_mass()
-        fortress = Fortress()
-        fortress.move_to(fortress_position + Point(0, -10))
-        game_state.map.add_tower(fortress)
 
         Model.warriors.random_walker = BFSWalker(game_state.map)
         Model.towers.simple_chooser = SimpleChooser(game_state.map)
@@ -67,3 +62,9 @@ class Level1(LevelLoader):
 
         controller = MainController(game_state)
         game_state.set_controller(controller)
+
+        fortress_position = game_state.map.get_cell_shape(game_state.map.height - 1,
+                                                          0).get_center_of_mass()
+        fortress = Fortress()
+        fortress.move_to(fortress_position + Point(0, -10))
+        game_state.map.add_tower(fortress)
