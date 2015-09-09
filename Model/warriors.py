@@ -1,6 +1,7 @@
 import copy
 import random
 import itertools
+import math
 from Geometry.point import Point
 from Geometry.polygon import Polygon
 from Model.events import DeleteWarriorEvent
@@ -14,6 +15,7 @@ __author__ = 'umqra'
 class Warrior:
     def __init__(self, shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
         self.shape = shape
+        self.target = None
         self.manipulator = manipulator
         if manipulator is not None:
             manipulator.add_warrior(self)
@@ -25,7 +27,6 @@ class Warrior:
         self.damage_radius = damage_radius
         self.direction = direction
         self.occupied_cells = []
-        self.target = None
 
         self.selected = False
 
@@ -76,6 +77,14 @@ class Warrior:
         cur_damage = self.damage * (Lighting.max_value - average_impulse) / (Lighting.max_value * 0.5)
         item.damaged(cur_damage)
 
+    def distance_to_target(self):
+        if self.target is not None:
+            return (self.target.shape.get_center_of_mass() - self.shape.get_center_of_mass()).length
+        return 0
+
+    def get_direction_to_target(self):
+        return self.target.shape.get_center_of_mass() - self.shape.get_center_of_mass()
+
 
 def restore_path(start, end, parents):
     path = [end]
@@ -89,25 +98,49 @@ class BFSWalker:
     def __init__(self, map):
         self.map = map
         self.warriors = []
+        self.warriors_delay = []
         self.paths = {}
 
-    def add_warrior(self, warrior):
-        self.warriors.append(warrior)
+    def choose_target(self, warrior):
         center = warrior.shape.get_center_of_mass()
         row = int(center.y // MapCell.cell_size)
         col = int(center.x // MapCell.cell_size)
 
-        self.paths[warrior] = self.path_between_cells((row, col), self.map.fortress_cell)
+        if not self.map.towers:
+            warrior.target = None
+            return
+        target = random.choice(self.map.towers)
+        warrior.target = target
+        self.paths[warrior] = self.path_between_cells((row, col), self.map.get_random_item_cell(target))
+
+    def add_warrior(self, warrior):
+        self.warriors.append(warrior)
+        self.choose_target(warrior)
+        self.warriors_delay.append(0)
 
     def remove_warrior(self, warrior):
+        warrior_id = self.get_warrior_id(warrior)
+        del self.warriors_delay[warrior_id]
         self.warriors.remove(warrior)
 
+    def get_warrior_id(self, warrior):
+        return self.warriors.index(warrior)
+
     def run(self, warrior, dt):
+        if warrior.target is None or not warrior.target.is_alive:
+            self.choose_target(warrior)
+            return
+
+        warrior_id = self.get_warrior_id(warrior)
+        self.warriors_delay[warrior_id] = max(0, self.warriors_delay[warrior_id] - dt)
+        if self.warriors_delay[warrior_id] > 0:
+            return
         center = warrior.shape.get_center_of_mass()
         row = int(center.y // MapCell.cell_size)
         col = int(center.x // MapCell.cell_size)
         path = self.paths[warrior]
         if not path:
+            self.paths[warrior] = self.path_between_cells((row, col), self.map.get_random_item_cell(warrior.target))
             return
         if path[0] == (row, col):
             path.pop(0)
@@ -115,15 +148,15 @@ class BFSWalker:
             next_cell = path[0]
             goal = self.map.get_cell_shape(*next_cell).get_center_of_mass()
             direction = goal - center
-        else:
-            direction = Point(0, 0)
-            while direction == Point(0, 0):
-                direction = Point(random.randint(-10, 10), random.randint(-10, 10))
+        if not path or warrior.distance_to_target() < 80:
+            direction = warrior.get_direction_to_target()
+            direction = direction.rotate(random.triangular(-math.pi, math.pi))
         warrior.move_by(direction, dt)
         if not self.map.can_put_item(warrior):
             warrior.move_by(-direction, dt)
             if path:
-                self.paths[warrior] = self.path_between_cells((row, col), self.map.fortress_cell, {path[0]})
+                self.paths[warrior] = self.path_between_cells((row, col), self.map.get_random_item_cell(warrior.target),
+                                                              {path[0]})
 
     def path_between_cells(self, start, end, blocked=None):
         q = [start]
@@ -187,5 +220,5 @@ class SimpleWarrior(Warrior):
         shape.move(position)
         if direction is None:
             direction = Point(-1, 1)
-        #               (shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
+        # (shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
         super().__init__(shape, random_walker, GameFraction.Dark, 100, 40, 0.05, 25, direction)

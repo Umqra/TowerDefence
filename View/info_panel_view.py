@@ -29,7 +29,7 @@ class InfoPanelView(QWidget):
             2, 0)
 
         self.layout.addWidget(LoaderWidget(
-            lambda: (self.state.waves[0].start_time - self.state.time).total_hours if self.state.waves else 0,
+            lambda: max((self.state.waves[0].start_time - self.state.time).total_hours, 0) if self.state.waves else 0,
             0, 10,
             LoaderStyle(LoaderType.TextOnly, 60, "Hours to wave",
                         QColor.fromRgb(255, 255, 255),

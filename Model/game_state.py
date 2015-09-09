@@ -1,4 +1,7 @@
+from enum import Enum
 import re
+from Model import level_loader
+from Model.game_result import GameResult
 from Model.store import Store
 
 __author__ = 'umqra'
@@ -7,31 +10,6 @@ import logging
 from Model.time import Time
 
 logger = logging.getLogger(__name__)
-
-
-class NotificationEvent:
-    def __init__(self, predicat, notification):
-        self.predicat = predicat
-        self.notification = notification
-
-    def can_run(self):
-        return self.predicat()
-
-
-class NotificationCreator:
-    def __init__(self, state):
-        self.state = state
-        self.events = []
-
-    def add_event(self, event):
-        self.events.append(event)
-
-    def tick(self, dt):
-        for event in self.events:
-            if event.can_run():
-                self.state.push_notification(event.notification)
-                continue
-
 
 class LevelFormatError(Exception):
     pass
@@ -55,10 +33,21 @@ class GameState:
     def restart(self):
         self.game.load_level(self.loader)
 
+    def next_level(self):
+        self.game.load_level(level_loader.levels[self.loader.level_id + 1])
+
     def push_notification(self, text):
         self.notification = text
         for view in self.views:
             view.update()
+
+    @property
+    def game_result(self):
+        if self.map.fortress_health == 0:
+            return GameResult.Lose
+        if not self.map.warriors and not self.waves:
+            return GameResult.Win
+        return GameResult.Running
 
     def get_normal_light(self):
         max_value = Time.max_total_seconds() / 2
@@ -66,6 +55,8 @@ class GameState:
         return 255 - abs(mid_value - self.time.value) / max_value * 255
 
     def tick(self, dt):
+        if self.game_result != GameResult.Running:
+            self.pause = True
         if self.pause:
             return
         if self.waves:

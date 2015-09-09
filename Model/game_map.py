@@ -53,6 +53,10 @@ class GameMap:
         cell = self.get_occupied_cells(self.fortress)[0]
         return (cell.x, cell.y) if self.fortress else (self.height - 1, 0)
 
+    def get_random_item_cell(self, item):
+        cell = self.get_occupied_cells(item)[0]
+        return (cell.x, cell.y)
+
     def initialize_from_file(self, filename):
         logging.info('Initialize map from file {}'.format(filename))
         try:
