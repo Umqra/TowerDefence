@@ -222,3 +222,15 @@ class SimpleWarrior(Warrior):
             direction = Point(-1, 1)
         # (shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
         super().__init__(shape, random_walker, GameFraction.Dark, 100, 40, 0.05, 25, direction)
+
+
+class AdamantWarrior(Warrior):
+    def __init__(self, position, direction=None):
+        if position is None:
+            position = Point()
+        shape = copy.deepcopy(simple_warrior_shape)
+        shape.move(position)
+        if direction is None:
+            direction = Point(-1, 1)
+        # (shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
+        super().__init__(shape, random_walker, GameFraction.Dark, 200, 80, 0.5, 35, direction)

@@ -8,7 +8,7 @@ from Model.store import StoreItem, Store
 from Model.time import Time
 from Model.towers import EnergyTower, LightTower, SimpleChooser, simple_chooser, JustTower, Fortress
 import Model
-from Model.warriors import BFSWalker, SimpleWarrior
+from Model.warriors import BFSWalker, SimpleWarrior, AdamantWarrior
 from Model.wave import Wave
 
 __author__ = 'umqra'
@@ -34,7 +34,7 @@ class Level1(LevelLoader):
         Model.towers.simple_chooser = SimpleChooser(game_state.map)
         game_state.waves.append(Wave(
             game_state, Time.fromDHMS(0, 14, 0, 0),
-            [SimpleWarrior, SimpleWarrior, SimpleWarrior],
+            [SimpleWarrior, SimpleWarrior, SimpleWarrior, SimpleWarrior, SimpleWarrior],
             [Point(400, 100), Point(300, 30), Point(350, 20)]
         ))
 
@@ -58,6 +58,7 @@ class Level1(LevelLoader):
         creator.add_event(
             NotificationEvent(lambda: game_state.game_result == GameResult.Lose, "You lose! Click 'Restart'"))
 
+
         game_state.notification_creator = creator
 
         controller = MainController(game_state)
@@ -75,7 +76,7 @@ class Level2(LevelLoader):
 
     @staticmethod
     def init_game(game_state):
-        game_state.money = 200
+        game_state.money = 400
         game_state.time = Time.fromHMS(12, 0, 0)
 
         game_state.map = GameMap(10, 10, game_state)
@@ -85,14 +86,20 @@ class Level2(LevelLoader):
         Model.warriors.random_walker = BFSWalker(game_state.map)
         Model.towers.simple_chooser = SimpleChooser(game_state.map)
         game_state.waves.append(Wave(
-            game_state, Time.fromDHMS(0, 14, 0, 0),
-            [SimpleWarrior, SimpleWarrior, SimpleWarrior],
+            game_state, Time.fromDHMS(0, 16, 0, 0),
+            [SimpleWarrior, SimpleWarrior, SimpleWarrior, SimpleWarrior],
             [Point(400, 100), Point(300, 30), Point(350, 20)]
         ))
 
         game_state.waves.append(Wave(
             game_state, Time.fromDHMS(0, 23, 0, 0),
-            [SimpleWarrior, SimpleWarrior, SimpleWarrior],
+            [SimpleWarrior, SimpleWarrior, SimpleWarrior, SimpleWarrior, AdamantWarrior],
+            [Point(400, 100), Point(350, 50)]
+        ))
+
+        game_state.waves.append(Wave(
+            game_state, Time.fromDHMS(1, 5, 0, 0),
+            [AdamantWarrior, SimpleWarrior],
             [Point(400, 100), Point(350, 50)]
         ))
         game_state.store = Store([
@@ -110,6 +117,9 @@ class Level2(LevelLoader):
         creator.add_event(NotificationEvent(lambda: game_state.map.fortress_health < 20, "Castle is in danger!"))
         creator.add_event(NotificationEvent(lambda: game_state.time.hour == 0, "New day starts!"))
         creator.add_event(NotificationEvent(lambda: game_state.time.hour == 12, "It is noon"))
+        creator.add_event(
+            NotificationEvent(lambda: game_state.map.adamant_is_coming, "Adamant is coming! Run away! Run away!")
+        )
         creator.add_event(
             NotificationEvent(lambda: game_state.game_result == GameResult.Win, "You win! Click 'Next level'"))
         creator.add_event(

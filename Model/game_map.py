@@ -3,7 +3,7 @@ from Geometry.polygon import Polygon
 from Model.bullets import Bullet
 from Model.light import LightImpulse
 from Model.towers import Tower, Fortress
-from Model.warriors import Warrior
+from Model.warriors import Warrior, AdamantWarrior
 
 __author__ = 'umqra'
 import re
@@ -45,8 +45,15 @@ class GameMap:
         self.controller = None
 
     @property
+    def adamant_is_coming(self):
+        for warrior in self.warriors:
+            if isinstance(warrior, AdamantWarrior):
+                return True
+        return False
+
+    @property
     def fortress_health(self):
-        return self.fortress.health if self.fortress else 0
+        return max(self.fortress.health, 0) if self.fortress else 0
 
     @property
     def fortress_cell(self):
