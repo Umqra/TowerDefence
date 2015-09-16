@@ -1,3 +1,4 @@
+import random
 from Geometry.compare_double import *
 from Geometry.line import Line
 from Geometry.point import Point
@@ -40,6 +41,20 @@ class Polygon:
         self.rotate_around_origin(angle)
         self.move(-P)
         self._calc_bounding_box()
+
+    def get_perimeter(self):
+        perimeter = 0
+        for side in self.get_side_segments():
+            perimeter += side.length
+        return perimeter
+
+    def get_random_point_on_border(self):
+        distance = random.uniform(0, self.get_perimeter())
+        for side in self.get_side_segments():
+            if less_or_equal(distance, side.length):
+                return side.A + side.direction.set_length(distance)
+            else:
+                distance -= side.length
 
     def get_side_segments(self):
         l = len(self.shape)

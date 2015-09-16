@@ -83,7 +83,7 @@ class Warrior:
         return 0
 
     def get_direction_to_target(self):
-        return self.target.shape.get_center_of_mass() - self.shape.get_center_of_mass()
+        return self.target.shape.get_random_point_on_border() - self.shape.get_center_of_mass()
 
 
 def restore_path(start, end, parents):
@@ -141,6 +141,8 @@ class BFSWalker:
         path = self.paths[warrior]
         if not path:
             self.paths[warrior] = self.path_between_cells((row, col), self.map.get_random_item_cell(warrior.target))
+            if self.paths[warrior] is None:
+                self.choose_target(warrior)
             return
         if path[0] == (row, col):
             path.pop(0)
@@ -150,7 +152,6 @@ class BFSWalker:
             direction = goal - center
         if not path or warrior.distance_to_target() < 80:
             direction = warrior.get_direction_to_target()
-            direction = direction.rotate(random.triangular(-math.pi, math.pi))
         warrior.move_by(direction, dt)
         if not self.map.can_put_item(warrior):
             warrior.move_by(-direction, dt)
@@ -204,19 +205,13 @@ class BFSWalker:
 
 random_walker = None
 
-simple_warrior_shape = Polygon([
-    Point(0, 0),
-    Point(20, 0),
-    Point(20, 20),
-    Point(0, 20)
-])
-
-
 class SimpleWarrior(Warrior):
+    _default_shape = Polygon([Point(0, 0), Point(30, 0), Point(30, 30), Point(0, 30)])
+
     def __init__(self, position, direction=None):
         if position is None:
             position = Point()
-        shape = copy.deepcopy(simple_warrior_shape)
+        shape = copy.deepcopy(SimpleWarrior._default_shape)
         shape.move(position)
         if direction is None:
             direction = Point(-1, 1)
@@ -225,12 +220,14 @@ class SimpleWarrior(Warrior):
 
 
 class AdamantWarrior(Warrior):
+    _default_shape = Polygon([Point(0, 0), Point(30, 0), Point(30, 30), Point(0, 30)])
+
     def __init__(self, position, direction=None):
         if position is None:
             position = Point()
-        shape = copy.deepcopy(simple_warrior_shape)
+        shape = copy.deepcopy(AdamantWarrior._default_shape)
         shape.move(position)
         if direction is None:
             direction = Point(-1, 1)
         # (shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
-        super().__init__(shape, random_walker, GameFraction.Dark, 200, 80, 0.5, 35, direction)
+        super().__init__(shape, random_walker, GameFraction.Dark, 200, 50, 0.5, 35, direction)

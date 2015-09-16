@@ -2,6 +2,7 @@ import copy
 from PyQt4 import QtCore
 from Controller.controller_events import StoreControllerEvent, MapControllerEvent
 from Geometry.point import Point
+from Model.game_result import GameResult
 
 __author__ = 'umqra'
 
@@ -13,6 +14,8 @@ class MainController:
         self.store_info = None
 
     def select(self, item, store_info=None):
+        if self.state.game_result != GameResult.Running:
+            return
         self.selected_item = item
         self.store_info = store_info
         self.state.map.add_preview_item(item)

@@ -47,6 +47,8 @@ class GameState:
             return GameResult.Lose
         if not self.map.warriors and not self.waves:
             return GameResult.Win
+        if self.pause:
+            return GameResult.Pause
         return GameResult.Running
 
     def get_normal_light(self):

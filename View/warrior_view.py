@@ -42,7 +42,7 @@ class SimpleWarriorView(WarriorView):
 
 
 class AdamantWarriorView(WarriorView):
-    image = [load_image("adamant_warrior", 30)]
+    images = [load_image("adamant_warrior", 30)]
     count_states = 1
 
     def __init__(self, model):
