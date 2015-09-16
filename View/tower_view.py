@@ -1,3 +1,5 @@
+from Infrastructure.get_resources import get_default_image, load_image
+
 __author__ = 'umqra'
 
 from Model.towers import EnergyTower, LightTower, JustTower, Fortress
@@ -32,7 +34,7 @@ def draw_loader(x, y, w, h, percentage, qp, color):
 
 
 class EnergyTowerView(TowerView):
-    image = QImage('Resources/Images/energy_tower.png').scaledToWidth(50)  # TODO: replace number to constant
+    image = load_image("energy_tower.png", 50)
 
     def __init__(self, model):
         super().__init__(model)
@@ -66,7 +68,7 @@ class EnergyTowerView(TowerView):
 
 
 class LightTowerView(TowerView):
-    image = QImage('Resources/Images/light_tower.png').scaledToWidth(50)  # TODO: replace number to constant
+    image = load_image("light_tower.png", 50)
 
     def __init__(self, model):
         super().__init__(model)
@@ -101,7 +103,7 @@ class LightTowerView(TowerView):
 
 
 class JustTowerView(TowerView):
-    image = QImage('Resources/Images/just_tower.png').scaledToWidth(50)  # TODO: replace number to constant
+    image = load_image("just_tower.png", 50)
 
     def __init__(self, model):
         super().__init__(model)
@@ -130,8 +132,9 @@ class JustTowerView(TowerView):
     def mousePressEvent(self, QMouseEvent):
         print("Press {}".format(self))
 
+
 class FortressView(TowerView):
-    image = QImage('Resources/Images/fortress.png').scaledToWidth(50)  # TODO: replace number to constant
+    image = load_image("fortress.png", 50)
 
     def __init__(self, model):
         super().__init__(model)

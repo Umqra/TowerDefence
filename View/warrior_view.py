@@ -1,4 +1,5 @@
 from PyQt4.QtGui import QWidget, QPainter, QImage, QPixmap
+from Infrastructure.get_resources import load_image, load_animation
 from Model.warriors import SimpleWarrior, AdamantWarrior
 
 __author__ = 'umqra'
@@ -23,20 +24,7 @@ class WarriorView(QWidget):
 
 
 class SimpleWarriorView(WarriorView):
-    images = [
-        QImage('Resources/Images/warrior_0').scaledToWidth(30),
-        QImage('Resources/Images/warrior_0').scaledToWidth(30),
-        QImage('Resources/Images/warrior_0').scaledToWidth(30),
-        QImage('Resources/Images/warrior_1').scaledToWidth(30),
-        QImage('Resources/Images/warrior_1').scaledToWidth(30),
-        QImage('Resources/Images/warrior_1').scaledToWidth(30),
-        QImage('Resources/Images/warrior_2').scaledToWidth(30),
-        QImage('Resources/Images/warrior_2').scaledToWidth(30),
-        QImage('Resources/Images/warrior_2').scaledToWidth(30),
-        QImage('Resources/Images/warrior_3').scaledToWidth(30),
-        QImage('Resources/Images/warrior_3').scaledToWidth(30),
-        QImage('Resources/Images/warrior_3').scaledToWidth(30),
-    ]
+    images = load_animation("warrior_", 30, [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3])
     count_states = 12
 
     def __init__(self, model):
@@ -54,9 +42,7 @@ class SimpleWarriorView(WarriorView):
 
 
 class AdamantWarriorView(WarriorView):
-    images = [
-        QImage('Resources/Images/adamant_warrior').scaledToWidth(30),
-    ]
+    image = [load_image("adamant_warrior", 30)]
     count_states = 1
 
     def __init__(self, model):

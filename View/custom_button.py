@@ -15,7 +15,6 @@ class CustomButton(QPushButton):
         print(CustomButton.stylesheet)
         self.setFocusPolicy(QtCore.Qt.NoFocus)
         self.setStyleSheet(CustomButton.stylesheet)
-        QFontDatabase.addApplicationFont('Resources/Fonts/BACKTO1982.TTF')
         self.setFont(QFont('BACKTO1982'))
 
 

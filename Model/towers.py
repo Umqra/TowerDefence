@@ -109,24 +109,21 @@ class RechargeTower(Tower):
         return self.attack()
 
 
-energy_tower_default_shape = Polygon([
-    Point(0, 0),
-    Point(50, 0),
-    Point(50, 50),
-    Point(0, 50)
-])
-
 simple_chooser = None
 
 
 class EnergyTower(RechargeTower):
-    def __init__(self, shape=None, target_chooser=None, fraction=GameFraction.Light, health=100,
-                 damage=20, recharge_time=5):
-        if shape is None:
-            shape = copy.deepcopy(energy_tower_default_shape)
-        if target_chooser is None:
-            target_chooser = simple_chooser
-        super().__init__(shape, target_chooser, fraction, health, damage, recharge_time)
+    _default_shape = Polygon([Point(0, 0), Point(50, 0), Point(50, 50), Point(0, 50)])
+    _fraction = GameFraction.Light
+    _health = 100
+    _damage = 20
+    _recharge_time = 5
+
+    def __init__(self):
+        shape = copy.deepcopy(EnergyTower._default_shape)
+        target_chooser = simple_chooser
+        super().__init__(shape, target_chooser, EnergyTower._fraction, EnergyTower._health, EnergyTower._damage,
+                         EnergyTower._recharge_time)
 
     def attack(self):
         if self.target is None:
@@ -140,21 +137,17 @@ class EnergyTower(RechargeTower):
             EnergyBullet(self.gun_position, self.target, self.fraction, cur_damage))]
 
 
-light_tower_default_shape = Polygon([
-    Point(0, 0),
-    Point(50, 0),
-    Point(50, 50),
-    Point(0, 50)
-])
-
-
 class LightTower(RechargeTower):
-    def __init__(self, shape=None, fraction=GameFraction.Light, health=100, impulse_force=200,
-                 recharge_time=5):
-        if shape is None:
-            shape = copy.deepcopy(light_tower_default_shape)
-        super().__init__(shape, None, fraction, health, None, recharge_time)
-        self.impulse_force = impulse_force
+    _fraction = GameFraction.Light
+    _health = 100
+    _impulse_force = 200
+    _recharge_time = 5
+    _default_shape = Polygon([Point(0, 0), Point(50, 0), Point(50, 50), Point(0, 50)])
+
+    def __init__(self):
+        shape = copy.deepcopy(LightTower._default_shape)
+        super().__init__(shape, None, LightTower._fraction, LightTower._health, None, LightTower._recharge_time)
+        self.impulse_force = LightTower._impulse_force
 
     def tick(self, dt):
         if not self.is_alive:
@@ -168,16 +161,24 @@ class LightTower(RechargeTower):
 
 
 class JustTower(Tower):
-    def __init__(self, fraction=GameFraction.Light):
-        shape = copy.deepcopy(energy_tower_default_shape)
-        super().__init__(shape, None, fraction, 10)
+    _fraction = GameFraction.Light
+    _health = 10
+    _default_shape = Polygon([Point(0, 0), Point(50, 0), Point(50, 50), Point(0, 50)])
+
+    def __init__(self):
+        shape = copy.deepcopy(JustTower._default_shape)
+        super().__init__(shape, None, JustTower._fraction, JustTower._health)
 
 
 class Fortress(Tower):
-    def __init__(self, fraction=GameFraction.Light):
-        shape = copy.deepcopy(energy_tower_default_shape)
+    _fraction = GameFraction.Light
+    _health = 100
+    _default_shape = Polygon([Point(0, 0), Point(50, 0), Point(50, 50), Point(0, 50)])
+
+    def __init__(self):
+        shape = copy.deepcopy(Fortress._default_shape)
         self.last_day = -1
-        super().__init__(shape, simple_chooser, fraction, 100)
+        super().__init__(shape, simple_chooser, Fortress._fraction, Fortress._health)
 
     def tick(self, dt):
         if not self.is_alive:

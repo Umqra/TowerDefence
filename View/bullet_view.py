@@ -1,6 +1,8 @@
 from PyQt4.QtGui import QWidget, QPainter, QImage, QPixmap
 from PyQt4 import QtGui
+from Infrastructure import get_resources
 import math
+from Infrastructure.get_resources import load_animation
 
 __author__ = 'umqra'
 
@@ -24,15 +26,7 @@ class BulletView(QWidget):
 
 
 class EnergyBulletView(BulletView):
-    images = [
-        QImage('Resources/Images/energy_bullet_0').scaledToWidth(EnergyBullet.bounding_box),
-        QImage('Resources/Images/energy_bullet_0').scaledToWidth(EnergyBullet.bounding_box),
-        QImage('Resources/Images/energy_bullet_1').scaledToWidth(EnergyBullet.bounding_box),
-        QImage('Resources/Images/energy_bullet_1').scaledToWidth(EnergyBullet.bounding_box),
-        QImage('Resources/Images/energy_bullet_2').scaledToWidth(EnergyBullet.bounding_box),
-        QImage('Resources/Images/energy_bullet_2').scaledToWidth(EnergyBullet.bounding_box),
-    ]
-
+    images = load_animation("energy_bullet_", EnergyBullet.bounding_box, [0, 0, 1, 1, 2, 2])
     count_states = 6
 
     def __init__(self, model):

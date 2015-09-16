@@ -1,4 +1,5 @@
 from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QImage, QPixmap
+from Infrastructure.get_resources import load_image
 from Model.map_cell import *
 
 __author__ = 'umqra'
@@ -24,38 +25,37 @@ class LightView(QWidget):
 
 
 images = {
-    "F1": QImage('Resources/Images/F1.png').scaledToWidth(50),
-    "F2": QImage('Resources/Images/F2.png').scaledToWidth(50),
-    "F3": QImage('Resources/Images/F3.png').scaledToWidth(50),
-    "F4": QImage('Resources/Images/F4.png').scaledToWidth(50),
-    "F5": QImage('Resources/Images/F5.png').scaledToWidth(50),
-    "F6": QImage('Resources/Images/F6.png').scaledToWidth(50),
-    "F7": QImage('Resources/Images/F7.png').scaledToWidth(50),
-    "F8": QImage('Resources/Images/F8.png').scaledToWidth(50),
-    "F9": QImage('Resources/Images/F9.png').scaledToWidth(50),
+    "F1": load_image('F1.png', 50),
+    "F2": load_image('F2.png', 50),
+    "F3": load_image('F3.png', 50),
+    "F4": load_image('F4.png', 50),
+    "F5": load_image('F5.png', 50),
+    "F6": load_image('F6.png', 50),
+    "F7": load_image('F7.png', 50),
+    "F8": load_image('F8.png', 50),
+    "F9": load_image('F9.png', 50),
 
-    "FA": QImage('Resources/Images/FA.png').scaledToWidth(50),
-    "FB": QImage('Resources/Images/FB.png').scaledToWidth(50),
-    "FC": QImage('Resources/Images/FC.png').scaledToWidth(50),
-    "FD": QImage('Resources/Images/FD.png').scaledToWidth(50),
+    "FA": load_image('FA.png', 50),
+    "FB": load_image('FB.png', 50),
+    "FC": load_image('FC.png', 50),
+    "FD": load_image('FD.png', 50),
 
+    "G1": load_image('G1.png', 50),
+    "G2": load_image('G2.png', 50),
+    "G3": load_image('G3.png', 50),
+    "G4": load_image('G4.png', 50),
+    "G5": load_image('G5.png', 50),
+    "G6": load_image('G6.png', 50),
+    "G7": load_image('G7.png', 50),
+    "G8": load_image('G8.png', 50),
+    "G9": load_image('G9.png', 50),
 
-    "G1": QImage('Resources/Images/G1.png').scaledToWidth(50),
-    "G2": QImage('Resources/Images/G2.png').scaledToWidth(50),
-    "G3": QImage('Resources/Images/G3.png').scaledToWidth(50),
-    "G4": QImage('Resources/Images/G4.png').scaledToWidth(50),
-    "G5": QImage('Resources/Images/G5.png').scaledToWidth(50),
-    "G6": QImage('Resources/Images/G6.png').scaledToWidth(50),
-    "G7": QImage('Resources/Images/G7.png').scaledToWidth(50),
-    "G8": QImage('Resources/Images/G8.png').scaledToWidth(50),
-    "G9": QImage('Resources/Images/G9.png').scaledToWidth(50),
+    "GA": load_image('GA.png', 50),
+    "GB": load_image('GB.png', 50),
+    "GC": load_image('GC.png', 50),
+    "GD": load_image('GD.png', 50),
 
-    "GA": QImage('Resources/Images/GA.png').scaledToWidth(50),
-    "GB": QImage('Resources/Images/GB.png').scaledToWidth(50),
-    "GC": QImage('Resources/Images/GC.png').scaledToWidth(50),
-    "GD": QImage('Resources/Images/GD.png').scaledToWidth(50),
-
-    "R1": QImage('Resources/Images/R1.png').scaledToWidth(50),
+    "R1": load_image('R1.png', 50),
 }
 
 
