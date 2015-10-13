@@ -23,7 +23,7 @@ class Level1(LevelLoader):
 
     @staticmethod
     def init_game(game_state):
-        game_state.money = 100
+        game_state.money = 300
         game_state.time = Time.fromHMS(12, 0, 0)
 
         game_state.map = GameMap(10, 10, game_state)

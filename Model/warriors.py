@@ -205,6 +205,7 @@ class BFSWalker:
 
 random_walker = None
 
+
 class SimpleWarrior(Warrior):
     _default_shape = Polygon([Point(0, 0), Point(30, 0), Point(30, 30), Point(0, 30)])
 
