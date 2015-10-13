@@ -13,9 +13,10 @@ class MainController:
         self.selected_item = None
         self.store_info = None
 
-    def select(self, item, store_info=None):
+    def select(self, factory, store_info=None):
         if self.state.game_result != GameResult.Running:
             return
+        item = factory(self.state.map)
         self.selected_item = item
         self.store_info = store_info
         self.state.map.add_preview_item(item)
@@ -30,7 +31,7 @@ class MainController:
         if self.selected_item is not None:
             self.unselect()
         if event.mouse_event.buttons() == QtCore.Qt.LeftButton:
-            self.select(event.selected_item, event.store_info)
+            self.select(event.factory_for_items, event.store_info)
 
     def handle_map_event(self, event):
         if event.mouse_event.type() == QtCore.QEvent.MouseMove:
@@ -40,7 +41,7 @@ class MainController:
             if event.mouse_event.buttons() == QtCore.Qt.RightButton:
                 self.unselect()
             elif event.mouse_event.buttons() == QtCore.Qt.LeftButton and self.selected_item is not None:
-                if self.state.buy_item(self.selected_item, self.store_info):
+                if self.state.try_buy_item(self.selected_item, self.store_info):
                     self.unselect()
 
     def handle_event(self, event):

@@ -6,7 +6,7 @@ from Model.level_notifications import NotificationCreator
 from Model.level_notifications import NotificationEvent
 from Model.store import StoreItem, Store
 from Model.time import Time
-from Model.towers import EnergyTower, LightTower, SimpleChooser, simple_chooser, JustTower, Fortress
+from Model.towers import EnergyTower, LightTower, SimpleChooser, JustTower, Fortress
 import Model
 from Model.warriors import BFSWalker, SimpleWarrior, AdamantWarrior
 from Model.wave import Wave
@@ -31,7 +31,6 @@ class Level1(LevelLoader):
         game_state.map.initialize_from_file('map1.txt')
 
         Model.warriors.random_walker = BFSWalker(game_state.map)
-        Model.towers.simple_chooser = SimpleChooser(game_state.map)
         game_state.waves.append(Wave(
             game_state, Time.fromDHMS(0, 14, 0, 0),
             [SimpleWarrior, SimpleWarrior, SimpleWarrior, SimpleWarrior, SimpleWarrior],
@@ -66,7 +65,7 @@ class Level1(LevelLoader):
 
         fortress_position = game_state.map.get_cell_shape(game_state.map.height - 1,
                                                           0).get_center_of_mass()
-        fortress = Fortress()
+        fortress = Fortress(game_state.map)
         fortress.move_to(fortress_position + Point(0, -10))
         game_state.map.add_tower(fortress)
 
@@ -84,7 +83,6 @@ class Level2(LevelLoader):
         game_state.map.initialize_from_file('map1.txt')
 
         Model.warriors.random_walker = BFSWalker(game_state.map)
-        Model.towers.simple_chooser = SimpleChooser(game_state.map)
         game_state.waves.append(Wave(
             game_state, Time.fromDHMS(0, 16, 0, 0),
             [SimpleWarrior, SimpleWarrior, SimpleWarrior, SimpleWarrior],

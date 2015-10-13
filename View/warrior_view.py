@@ -17,7 +17,6 @@ def get_color_depends_on_damage(damage):
     red_factor = 1
     green_factor = 10 ** damage
     blue_factor = 100 ** (10 * damage)
-    print(red_factor, green_factor, blue_factor)
     return QColor.fromRgb(255 / red_factor, 255 / green_factor, 255 / blue_factor)
 
 def draw_info_arc(qp, model):

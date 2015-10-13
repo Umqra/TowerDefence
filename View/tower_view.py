@@ -28,6 +28,7 @@ class TowerView(QWidget):
     def paintEvent(self, QPaintEvent):
         if not self.model.is_alive:
             self.close()
+
         qp = QPainter()
         qp.begin(self)
         bbox = self.model.shape.get_bounding_box()
@@ -54,6 +55,8 @@ class TowerView(QWidget):
                         1 - self.model.time_to_attack / self.model.recharge_time, qp,
                         QColor.fromRgb(116, 66, 200))
 
+        if not self.model.is_valid_position_on_map():
+            qp.fillRect(x_coord, y_coord, picture_width, picture_height, QColor.fromRgb(240, 110, 0, 110))
 
 
 def draw_loader(x, y, w, h, percentage, qp, color):

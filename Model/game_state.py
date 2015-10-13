@@ -82,7 +82,7 @@ class GameState:
         self.store.set_controller(controller)
         self.controller = controller
 
-    def buy_item(self, item, store_info):
+    def try_buy_item(self, item, store_info):
         if self.money < store_info.cost:
             return False
         if not self.map.can_put_item(item):

@@ -27,8 +27,19 @@ class SimpleChooser:
                 return item
 
 
+simple_choosers = []
+
+def get_simple_chooser_for_map(map):
+    for simple_chooser in simple_choosers:
+        if simple_chooser.map == map:
+            return simple_chooser
+    new_chooser = SimpleChooser(map)
+    simple_choosers.append(new_chooser)
+    return new_chooser
+
 class Tower:
-    def __init__(self, shape, target_chooser, fraction, health):
+    def __init__(self, map, shape, target_chooser, fraction, health):
+        self.map = map
         self.shape = shape
         self.target = None
         self.fraction = fraction
@@ -90,9 +101,15 @@ class Tower:
         self.health -= damage
 
 
+    def is_valid_position_on_map(self):
+        if self in self.map.towers:
+            return True
+        return self.map.can_put_item(self)
+
+
 class RechargeTower(Tower):
-    def __init__(self, shape, target_chooser, fraction, health, damage, recharge_time):
-        super().__init__(shape, target_chooser, fraction, health)
+    def __init__(self, map, shape, target_chooser, fraction, health, damage, recharge_time):
+        super().__init__(map, shape, target_chooser, fraction, health)
         self.recharge_time = recharge_time
         self.time_to_attack = 0
         self.damage = damage
@@ -109,9 +126,6 @@ class RechargeTower(Tower):
         return self.attack()
 
 
-simple_chooser = None
-
-
 class EnergyTower(RechargeTower):
     _default_shape = Polygon([Point(0, 0), Point(50, 0), Point(50, 50), Point(0, 50)])
     _fraction = GameFraction.Light
@@ -119,10 +133,10 @@ class EnergyTower(RechargeTower):
     _damage = 20
     _recharge_time = 5
 
-    def __init__(self):
+    def __init__(self, map):
         shape = copy.deepcopy(EnergyTower._default_shape)
-        target_chooser = simple_chooser
-        super().__init__(shape, target_chooser, EnergyTower._fraction, EnergyTower._health, EnergyTower._damage,
+        target_chooser = get_simple_chooser_for_map(map)
+        super().__init__(map, shape, target_chooser, EnergyTower._fraction, EnergyTower._health, EnergyTower._damage,
                          EnergyTower._recharge_time)
 
     def attack(self):
@@ -144,9 +158,9 @@ class LightTower(RechargeTower):
     _recharge_time = 5
     _default_shape = Polygon([Point(0, 0), Point(50, 0), Point(50, 50), Point(0, 50)])
 
-    def __init__(self):
+    def __init__(self, map):
         shape = copy.deepcopy(LightTower._default_shape)
-        super().__init__(shape, None, LightTower._fraction, LightTower._health, None, LightTower._recharge_time)
+        super().__init__(map, shape, None, LightTower._fraction, LightTower._health, None, LightTower._recharge_time)
         self.impulse_force = LightTower._impulse_force
 
     def tick(self, dt):
@@ -165,9 +179,9 @@ class JustTower(Tower):
     _health = 10
     _default_shape = Polygon([Point(0, 0), Point(50, 0), Point(50, 50), Point(0, 50)])
 
-    def __init__(self):
+    def __init__(self, map):
         shape = copy.deepcopy(JustTower._default_shape)
-        super().__init__(shape, None, JustTower._fraction, JustTower._health)
+        super().__init__(map, shape, None, JustTower._fraction, JustTower._health)
 
 
 class Fortress(Tower):
@@ -175,15 +189,15 @@ class Fortress(Tower):
     _health = 100
     _default_shape = Polygon([Point(0, 0), Point(50, 0), Point(50, 50), Point(0, 50)])
 
-    def __init__(self):
+    def __init__(self, map):
         shape = copy.deepcopy(Fortress._default_shape)
         self.last_day = -1
-        super().__init__(shape, simple_chooser, Fortress._fraction, Fortress._health)
+        super().__init__(map, shape, None, Fortress._fraction, Fortress._health)
 
     def tick(self, dt):
         if not self.is_alive:
             return [DeleteTowerEvent(self)]
-        state = self.target_chooser.map.state
+        state = self.map.state
         if state.time.hour == 0 and self.last_day != state.time.day:
             state.money += 50
             self.last_day = state.time.day
