@@ -2,6 +2,7 @@ import itertools
 from Controller.controller_events import MapControllerEvent
 from Model.events import *
 from View.custom_layout import CustomLayout
+from View.gate_view import GateView
 from View.warrior_view import get_warrior_view
 
 __author__ = 'umqra'
@@ -26,6 +27,7 @@ class MapView(QWidget):
         self.warriors_view = []
         self.towers_view = []
         self.spells_view = []
+        self.gates_view = []
         self.previews = []
         self.layout = CustomLayout()
         self.setLayout(self.layout)
@@ -52,6 +54,10 @@ class MapView(QWidget):
         self.layout.add_on_top(preview)
         self.previews.append(preview)
 
+    def add_gate(self, gate):
+        self.layout.add_on_top(gate)
+        self.gates_view.append(gate)
+
     def init_details(self):
         light_view = LightView(self.model, self.cell_size)
         cells_view = CellsView(self.model, self.cell_size)
@@ -68,6 +74,9 @@ class MapView(QWidget):
         for bullet in self.model.bullets:
             view = get_bullet_view(bullet)
             self.add_bullet(view)
+        for gate in self.model.gates:
+            view = GateView(gate)
+            self.add_gate(view)
 #        for spell in self.model.spells:
 #            self.add_spell(spell)
 
@@ -82,6 +91,8 @@ class MapView(QWidget):
             pass
         elif isinstance(event, CreatePreviewEvent):
             self.add_preview(get_tower_view(event.item))
+        elif isinstance(event, CreateGateEvent):
+            self.add_gate(GateView(event.item))
 
     def process_events(self, events):
         for event in events:

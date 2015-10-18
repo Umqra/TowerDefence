@@ -62,6 +62,14 @@ class CreatePreviewEvent(CreateEvent):
         state.preview_items.append(self.item)
 
 
+class CreateGateEvent(CreateEvent):
+    def __init__(self, item):
+        super().__init__(item)
+
+    def process(self, state):
+        state.gates.append(self.item)
+
+
 class CollisionEvent(GameEvent):
     def __init__(self, first, second):
         self.first = first
@@ -134,3 +142,10 @@ class DeletePreviewEvent(DeleteEvent):
     def process(self, state):
         state.preview_items.remove(self.item)
 
+
+class DeleteGateEvent(DeleteEvent):
+    def __init__(self, item):
+        super().__init__(item)
+
+    def process(self, state):
+        state.gates.remove(self.item)

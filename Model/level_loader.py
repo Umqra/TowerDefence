@@ -9,7 +9,7 @@ from Model.time import Time
 from Model.towers import EnergyTower, LightTower, SimpleChooser, JustTower, Fortress
 import Model
 from Model.warriors import BFSWalker, SimpleWarrior, AdamantWarrior
-from Model.wave import Wave
+from Model.wave import Wave, Gate
 
 __author__ = 'umqra'
 
@@ -31,10 +31,16 @@ class Level1(LevelLoader):
         game_state.map.initialize_from_file('map1.txt')
 
         Model.warriors.random_walker = BFSWalker(game_state.map)
+        g1 = Gate(game_state.map, Point(400, 100))
+        g2 = Gate(game_state.map, Point(300, 100))
+        g3 = Gate(game_state.map, Point(350, 60))
+        game_state.map.add_gate(g1)
+        game_state.map.add_gate(g2)
+        game_state.map.add_gate(g3)
         game_state.waves.append(Wave(
             game_state, Time.fromDHMS(0, 14, 0, 0),
             [SimpleWarrior, SimpleWarrior, SimpleWarrior, SimpleWarrior, SimpleWarrior],
-            [Point(400, 100), Point(300, 30), Point(350, 20)]
+            [g1, g2, g3]
         ))
 
         game_state.store = Store([

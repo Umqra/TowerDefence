@@ -41,6 +41,7 @@ class GameMap:
         self.towers = []
         self.fortress = None
 
+        self.gates = []
         self.warriors = []
         self.bullets = []
         self.spells = []
@@ -155,7 +156,11 @@ class GameMap:
         for cell in self.get_occupied_cells(item):
             if not cell.passable:
                 return False
-        for map_item in itertools.chain(self.warriors, self.towers):
+        if isinstance(item, Warrior):
+            collided_objects = itertools.chain(self.warriors, self.towers)
+        else:
+            collided_objects = itertools.chain(self.warriors, self.towers, self.gates)
+        for map_item in collided_objects:
             if map_item != item and item.shape.intersects_with_polygon(map_item.shape):
                 return False
         return True
@@ -167,6 +172,8 @@ class GameMap:
             self.add_bullet(item)
         elif isinstance(item, Warrior):
             self.add_warrior(item)
+        elif isinstance(item, Gate):
+            self.add_gate(item)
 
     def add_tower(self, tower):
         if self.can_put_item(tower):
@@ -190,6 +197,10 @@ class GameMap:
 
     def delete_bullet(self, bullet):
         self.process_events([DeleteBulletEvent(bullet)])
+
+    def add_gate(self, gate):
+        print("ADD GATE!!")
+        self.process_events([CreateGateEvent(gate)])
 
     def tick_init(self, dt):
         for row in range(self.height):
