@@ -1,8 +1,12 @@
 from enum import Enum
 import re
+from Controller.creator_controller import CreatorController
 from Model import level_loader
+from Model.game_map import GameMap
 from Model.game_result import GameResult
-from Model.store import Store
+from Model.store import Store, StoreItem
+from Model.towers import EnergyTower, JustTower
+from Model.towers import LightTower
 
 __author__ = 'umqra'
 
@@ -90,3 +94,16 @@ class GameState:
         self.money -= store_info.cost
         self.map.add_item(item)
         return True
+
+    def initialize_empty_level(self):
+        self.map = GameMap(10, 10, self)
+        self.map.initialize_empty_map()
+
+        self.store = Store([
+            StoreItem("Башенка", EnergyTower, 50,
+                      "Башенка - удивительное оружие света, которое защитит вас от любого типа монстров"),
+            StoreItem("Светилышко", LightTower, 100,
+                      "Светилышко - это чудо! Не упускай момента чтобы купить 'Светилышко'!"),
+            StoreItem("Просто башня", JustTower, 10,
+                      "Ты нищеброд и у тебя не хватает денег даже на Башенку?! Бери 'Просто башню'! Пусть постоит")
+        ])

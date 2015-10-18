@@ -16,3 +16,14 @@ class StoreControllerEvent(ControllerEvent):
         super().__init__(mouse_event)
         self.factory_for_items = factory_for_items
         self.store_info = store_info
+
+
+class MapCreatorControllerEvent(ControllerEvent):
+    def __init__(self, mouse_event):
+        super().__init__(mouse_event)
+
+
+class ChooseLandscapeEvent(ControllerEvent):
+    def __init__(self, mouse_event, cell):
+        super().__init__(mouse_event)
+        self.cell = cell

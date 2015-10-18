@@ -35,6 +35,9 @@ class MapCell:
         for cell in self.adjacent:
             cell.lighting.light_impulse.value += quantum / len(self.adjacent)
 
+    def get_view_repr(self):
+        return "?"
+
     def __repr__(self):
         return 'MapCell(state, {0}, {1}, {2}, {3}, {4})'.format(
             self.x, self.y, self.passable, repr(self.lighting), repr(self.adjacent))
@@ -46,6 +49,9 @@ class MapCell:
 class ForestCell(MapCell):
     def __init__(self, state, x, y, cell_repr, lighting=None, adjacent=None):
         super().__init__(state, x, y, False, cell_repr, lighting, adjacent)
+
+    def get_view_repr(self):
+        return "G"
 
     def __repr__(self):
         return 'ForestCell(state, {0}, {1}, {2}, {3})'.format(
@@ -59,6 +65,9 @@ class RoadCell(MapCell):
     def __init__(self, state, x, y, cell_repr, lighting=None, adjacent=None):
         super().__init__(state, x, y, True, cell_repr, lighting, adjacent)
 
+    def get_view_repr(self):
+        return "R"
+
     def __repr__(self):
         return 'RoadCell(state, {0}, {1}, {2}, {3})'.format(
             self.x, self.y, repr(self.lighting), repr(self.adjacent))
@@ -71,6 +80,9 @@ class GrassCell(MapCell):
     def __init__(self, state, x, y, cell_repr, lighting=None, adjacent=None):
         super().__init__(state, x, y, True, cell_repr, lighting, adjacent)
 
+    def get_view_repr(self):
+        return "G"
+
     def __repr__(self):
         return 'GrassCell(state, {0}, {1}, {2}, {3})'.format(
             self.x, self.y, repr(self.lighting), repr(self.adjacent))
@@ -82,6 +94,9 @@ class GrassCell(MapCell):
 class WaterCell(MapCell):
     def __init__(self, state, x, y, cell_repr, lighting=None, adjacent=None):
         super().__init__(state, x, y, False, cell_repr, lighting, adjacent)
+
+    def get_view_repr(self):
+        return "W"
 
     def __repr__(self):
         return 'WaterCell(state, {0}, {1}, {2}, {3})'.format(
@@ -101,6 +116,8 @@ cells_dict = {
     'G': GrassCell,
     ',': GrassCell,
 }
+
+all_cells = ['G', 'R']
 
 
 def create_cell(state, x, y, cell_repr):

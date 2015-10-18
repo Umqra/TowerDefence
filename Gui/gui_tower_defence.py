@@ -1,5 +1,8 @@
 from PyQt4 import QtGui
+from Controller.creator_controller import CreatorController
 from Gui import start_gui
+from Infrastructure.pyqt_helpers import clear_layout
+from View.creator_view import CreatorView
 
 __author__ = 'umqra'
 from datetime import datetime
@@ -24,16 +27,6 @@ from View.tower_view import EnergyTowerView
 from PyQt4 import QtGui, QtCore
 
 
-def clear_layout(layout):
-    if layout != None:
-        while layout.count():
-            child = layout.takeAt(0)
-            if child.widget() is not None:
-                child.widget().deleteLater()
-            elif child.layout() is not None:
-                clear_layout(child.layout())
-
-
 class Game(QtGui.QWidget):
     fps = 40
     interval = 1000. / fps
@@ -45,7 +38,8 @@ class Game(QtGui.QWidget):
         self.setLayout(self.layout)
         self.state = None
         self.state_view = None
-        self.load_level(Level1)
+        # self.load_level(Level1)
+        self.load_level_creator()
 
         self.timer = QtCore.QBasicTimer()
         self.timer.start(Game.interval, self)
@@ -56,6 +50,16 @@ class Game(QtGui.QWidget):
         self.state = GameState(self)
         self.state.initialize_with_loader(level_loader)
         self.state_view = StateView(self.state)
+        self.layout.addWidget(self.state_view)
+
+        self.setMouseTracking(True)
+
+    def load_level_creator(self):
+        self.reset_game()
+        self.state = GameState(self)
+        self.state.initialize_empty_level()
+        self.state.set_controller(CreatorController(self.state))
+        self.state_view = CreatorView(self.state)
         self.layout.addWidget(self.state_view)
 
         self.setMouseTracking(True)
@@ -80,6 +84,7 @@ class Game(QtGui.QWidget):
             return
         self.state.tick(Game.interval / 1000)
         self.repaint()
+
 
 def run():
     widget = Game()

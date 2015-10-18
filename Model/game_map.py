@@ -17,10 +17,60 @@ from Model.map_cell import create_cell, MapCell
 
 logging.config.fileConfig('logging.conf')
 
+# 8 neighbors and center point
+# 1 2 3
+# 8 0 4
+# 7 6 5
+# using ? if cell type may be any
 
+cell_repr_config = {
+    'GGGGGGGGG': 'G1',
+    'GGGGG?R?G': 'G2',
+    'GGGGGRGGG': 'G3',
+    'GGGGGGGRG': 'G4',
+    'G?GGGGG?R': 'G5',
+    'GRGGGGGGG': 'G6',
+    'G?R?GGGGG': 'G7',
+    'GGGRGGGGG': 'G8',
+    'GGG?R?GGG': 'G9',
+    'GRR??G??R': 'GA',
+    'G?RRR??G?': 'GB',
+    'G??G??RRR': 'GC',
+    'GG??RRR??': 'GD',
+
+    'R????????': 'R1',
+}
+
+
+def match_pattern(pattern, s):
+    if len(pattern) != len(s):
+        return False
+    for i in range(len(s)):
+        if pattern[i] == '?':
+            continue
+        if pattern[i] != s[i]:
+            return False
+    return True
+
+
+def get_cell_repr(adj_types):
+    s = ''.join(adj_types)
+    for k in cell_repr_config.keys():
+        if match_pattern(k, s):
+            return cell_repr_config[k]
+    print(s)
 
 class MapFormatError(Exception):
     pass
+
+
+def _get_adjacent_by_point(x, y):
+    order = [[1, 2, 3], [8, 0, 4], [7, 6, 5]]
+    for i in range(9):
+        for dx in range(3):
+            for dy in range(3):
+                if order[dx][dy] == i:
+                    yield x + dx - 1, y + dy - 1
 
 
 class GameMap:
@@ -43,6 +93,9 @@ class GameMap:
 
         self.events = []
         self.controller = None
+
+    def get_cell_coordinates(self, x, y):
+        return x // MapCell.cell_size, y // MapCell.cell_size
 
     @property
     def adamant_is_coming(self):
@@ -85,6 +138,32 @@ class GameMap:
             raise e
 
         self.set_adjacent()
+
+    def initialize_empty_map(self):
+        for x in range(self.height):
+            self.map[x] = [create_cell(self.state, x, y, 'G') for y in range(self.width)]
+        self.assign_cell_types()
+
+    def _get_cell_view_repr(self, x, y):
+        if x < 0 or y < 0 or x >= self.height or y >= self.width:
+            return 'G'
+        return self.map[x][y].get_view_repr()
+
+    def assign_cell_types(self):
+        for x in range(self.height):
+            for y in range(self.width):
+                self.map[x][y].cell_repr = get_cell_repr(
+                    map(
+                        lambda pos: self._get_cell_view_repr(pos[0], pos[1]),
+                        _get_adjacent_by_point(x, y)
+                    )
+                )
+
+    def set_cell_type(self, x, y, t):
+        self.map[x][y] = create_cell(self.state, x, y, t)
+        print(t, self.map[x][y])
+        self.assign_cell_types()
+        self.update_views()
 
     def set_adjacent(self):
         for x in range(self.height):
@@ -220,3 +299,11 @@ class GameMap:
 
     def set_controller(self, controller):
         self.controller = controller
+
+    def update_views(self):
+        for x in range(self.height):
+            for y in range(self.width):
+                print(self.map[x][y], end='')
+            print("")
+        for view in self.views:
+            view.update()

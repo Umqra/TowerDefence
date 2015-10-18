@@ -13,6 +13,9 @@ class LightView(QWidget):
         self.model = model
         self.cell_size = cell_size
 
+    def update(self):
+        pass
+
     def paintEvent(self, QPaintEvent):
         qp = QPainter()
         qp.begin(self)
@@ -72,20 +75,24 @@ class CellsView(QWidget):
         self.setLayout(self.layout)
         self.init_cells()
 
+    def update(self):
+        for row in range(self.model.height):
+            for col in range(self.model.width):
+                self.layout.addWidget(create_cell_view(self.model.map[row][col]), row, col)
+
     def init_cells(self):
         for row in range(self.model.height):
             self.layout.setRowMinimumHeight(row, self.cell_size)
         for col in range(self.model.width):
             self.layout.setColumnMinimumWidth(col, self.cell_size)
-        for row in range(self.model.height):
-            for col in range(self.model.width):
-                self.layout.addWidget(create_cell_view(self.model.map[row][col]), row, col)
-
+        self.update()
 
 class CellView(QWidget):
     def __init__(self, model):
         super().__init__()
         self.model = model
+        self.setMinimumHeight(50)
+        self.setMinimumWidth(50)
 
 
 class ForestCellView(CellView):
@@ -93,6 +100,7 @@ class ForestCellView(CellView):
         super().__init__(model)
 
     def paintEvent(self, QPaintEvent):
+        super().paintEvent(QPaintEvent)
         qp = QPainter()
         qp.begin(self)
         qp.drawPixmap(0, 0, QPixmap(images[self.model.cell_repr]))
@@ -103,6 +111,7 @@ class RoadCellView(CellView):
         super().__init__(model)
 
     def paintEvent(self, QPaintEvent):
+        super().paintEvent(QPaintEvent)
         qp = QPainter()
         qp.begin(self)
         qp.drawPixmap(0, 0, QPixmap(images[self.model.cell_repr]))
@@ -113,6 +122,7 @@ class GrassCellView(CellView):
         super().__init__(model)
 
     def paintEvent(self, QPaintEvent):
+        super().paintEvent(QPaintEvent)
         qp = QPainter()
         qp.begin(self)
         qp.drawPixmap(0, 0, QPixmap(images[self.model.cell_repr]))
@@ -123,6 +133,7 @@ class WaterCellView(CellView):
         super().__init__(model)
 
     def paintEvent(self, QPaintEvent):
+        super().paintEvent(QPaintEvent)
         qp = QPainter()
         qp.begin(self)
         qp.drawPixmap(0, 0, QPixmap(images[self.model.cell_repr]))

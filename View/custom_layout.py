@@ -18,6 +18,8 @@ class CustomLayout(QStackedLayout):
         self.insertWidget(0, _WidgetForLayout())
 
     def add_on_top(self, widget):
+        if self.count() == 0:
+            self.insertWidget(0, _WidgetForLayout())
         self.widget(0).layout.insertWidget(-1, widget)
 
     def add_on_bottom(self, widget):

@@ -130,7 +130,7 @@ class Level2(LevelLoader):
 
         fortress_position = game_state.map.get_cell_shape(game_state.map.height - 1,
                                                           0).get_center_of_mass()
-        fortress = Fortress()
+        fortress = Fortress(game_state.map)
         fortress.move_to(fortress_position + Point(0, -10))
         game_state.map.add_tower(fortress)
 

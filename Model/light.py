@@ -16,7 +16,7 @@ class LightImpulse:
 class Lighting:
     max_value = 255
 
-    def __init__(self, value=0, light_impulse=None):
+    def __init__(self, value=255, light_impulse=None):
         self.value = value
         self.light_impulse = light_impulse if light_impulse is not None else LightImpulse()
 
