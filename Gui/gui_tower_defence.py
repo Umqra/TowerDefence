@@ -38,8 +38,8 @@ class Game(QtGui.QWidget):
         self.setLayout(self.layout)
         self.state = None
         self.state_view = None
-        self.load_level(Level1)
-        # self.load_level_creator()
+        # self.load_level(Level1)
+        self.load_level_creator()
 
         self.timer = QtCore.QBasicTimer()
         self.timer.start(Game.interval, self)

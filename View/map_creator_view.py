@@ -3,16 +3,24 @@ from Controller.controller_events import MapCreatorControllerEvent
 from Infrastructure.pyqt_helpers import clear_layout
 from Model.events import CreatePreviewEvent, CreateEvent, DeletePreviewEvent
 from Model.events import CreateTowerEvent
+from Model.towers import Tower
+from Model.wave import Gate
 from View.cells_view import LightView, CellsView
 from View.custom_layout import CustomLayout
+from View.gate_view import GateView
 from View.tower_view import get_tower_view
 from PyQt4 import QtGui, QtCore
 
 __author__ = 'umqra'
 
+def get_preview_view(item):
+    if isinstance(item, Tower):
+        return get_tower_view(item)
+    elif isinstance(item, Gate):
+        return GateView(item)
 
 class MapCreatorView(QWidget):
-    interval = 100
+    interval = 10
     def __init__(self, model, cell_size=50):
         super().__init__()
         model.views.append(self)
@@ -60,6 +68,7 @@ class MapCreatorView(QWidget):
         self.previews.append(preview)
 
     def update(self):
+        print("update!")
         self.light_view.update()
         self.cells_view.update()
 
@@ -82,7 +91,7 @@ class MapCreatorView(QWidget):
         if isinstance(event, CreateTowerEvent):
             self.add_tower(get_tower_view(event.item))
         elif isinstance(event, CreatePreviewEvent):
-            self.add_preview(get_tower_view(event.item))
+            self.add_preview(get_preview_view(event.item))
 
     def process_events(self, events):
         for event in events:
@@ -96,4 +105,7 @@ class MapCreatorView(QWidget):
                         break
 
     def mousePressEvent(self, e):
+        self.model.controller.handle_event(MapCreatorControllerEvent(e))
+
+    def mouseMoveEvent(self, e):
         self.model.controller.handle_event(MapCreatorControllerEvent(e))

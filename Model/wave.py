@@ -11,7 +11,9 @@ import random
 class Gate:
     _default_shape = Polygon([Point(0, 0), Point(50, 0), Point(50, 50), Point(0, 50)])
 
-    def __init__(self, map, position):
+    def __init__(self, map, position=None):
+        if position is None:
+            position = Point(0, 0)
         self.map = map
         self.shape = copy.deepcopy(Gate._default_shape)
         self.shape.move(position - self.shape.get_center_of_mass())
@@ -20,6 +22,13 @@ class Gate:
         self.health = 100
         self.occupied_cells = []
         self.selected = False
+
+    def move_to(self, destination):
+        direction = destination - self.shape.get_center_of_mass()
+        self.shape.move(direction)
+
+    def move_by(self, direction):
+        self.shape.move(direction)
 
     @property
     def is_alive(self):

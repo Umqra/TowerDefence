@@ -1,5 +1,6 @@
 from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QImage, QPixmap
 from Infrastructure.get_resources import load_image
+from Infrastructure.pyqt_helpers import clear_layout
 from Model.map_cell import *
 
 __author__ = 'umqra'
@@ -76,6 +77,7 @@ class CellsView(QWidget):
         self.init_cells()
 
     def update(self):
+        clear_layout(self.layout)
         for row in range(self.model.height):
             for col in range(self.model.width):
                 self.layout.addWidget(create_cell_view(self.model.map[row][col]), row, col)

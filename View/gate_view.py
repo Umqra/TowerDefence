@@ -7,6 +7,7 @@ __author__ = 'umqra'
 
 class GateView(StaticObjectView):
     image = load_image("gate.png", 50)
+
     def __init__(self, model):
         super().__init__(model)
         self.model = model

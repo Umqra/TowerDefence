@@ -5,6 +5,7 @@ from Model.cell_type_recon import get_cell_repr
 from Model.light import LightImpulse
 from Model.towers import Tower, Fortress
 from Model.warriors import Warrior, AdamantWarrior
+from Model.wave import Gate
 
 __author__ = 'umqra'
 import re
@@ -17,6 +18,7 @@ from Model.map_cell import create_cell, MapCell
 
 
 logging.config.fileConfig('logging.conf')
+
 
 class MapFormatError(Exception):
     pass
@@ -183,6 +185,12 @@ class GameMap:
             return True
         return False
 
+    def add_gate(self, gate):
+        if self.can_put_item(gate):
+            self.process_events([CreateGateEvent(gate)])
+            return True
+        return False
+
     def delete_tower(self, tower):
         self.process_events([DeleteTowerEvent(tower)])
 
@@ -197,10 +205,6 @@ class GameMap:
 
     def delete_bullet(self, bullet):
         self.process_events([DeleteBulletEvent(bullet)])
-
-    def add_gate(self, gate):
-        print("ADD GATE!!")
-        self.process_events([CreateGateEvent(gate)])
 
     def tick_init(self, dt):
         for row in range(self.height):

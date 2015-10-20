@@ -5,8 +5,9 @@ from Model import level_loader
 from Model.game_map import GameMap
 from Model.game_result import GameResult
 from Model.store import Store, StoreItem
-from Model.towers import EnergyTower, JustTower
+from Model.towers import EnergyTower, JustTower, Fortress
 from Model.towers import LightTower
+from Model.wave import Gate
 
 __author__ = 'umqra'
 
@@ -100,10 +101,14 @@ class GameState:
         self.map.initialize_empty_map()
 
         self.store = Store([
-            StoreItem("Башенка", EnergyTower, 50,
+            StoreItem("Башенка", EnergyTower, 0,
                       "Башенка - удивительное оружие света, которое защитит вас от любого типа монстров"),
-            StoreItem("Светилышко", LightTower, 100,
+            StoreItem("Светилышко", LightTower, 0,
                       "Светилышко - это чудо! Не упускай момента чтобы купить 'Светилышко'!"),
-            StoreItem("Просто башня", JustTower, 10,
-                      "Ты нищеброд и у тебя не хватает денег даже на Башенку?! Бери 'Просто башню'! Пусть постоит")
+            StoreItem("Просто башня", JustTower, 0,
+                      "Ты нищеброд и у тебя не хватает денег даже на Башенку?! Бери 'Просто башню'! Пусть постоит"),
+            StoreItem("Врата ада", Gate, 0,
+                      "Из этих ворот вылезают создания тьмы"),
+            StoreItem("Замок света", Fortress, 0,
+                      "Защити башню света - спаси мир от беспроглядной тьмы!")
         ])

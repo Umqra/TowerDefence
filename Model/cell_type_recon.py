@@ -1,6 +1,6 @@
 __author__ = 'umqra'
 
-# use dict for crating own symbols set
+# use dict for creating own symbols set
 
 symbol_set = {
     '?': 'WRGF'
@@ -48,4 +48,3 @@ def get_cell_repr(adj_types):
     for k in cell_repr_config.keys():
         if match_pattern(k, s):
             return cell_repr_config[k]
-    print(s)
