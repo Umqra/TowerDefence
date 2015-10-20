@@ -1,13 +1,15 @@
 from enum import Enum
 import re
 from Controller.creator_controller import CreatorController
+from Geometry.point import Point
 from Model import level_loader
 from Model.game_map import GameMap
 from Model.game_result import GameResult
 from Model.store import Store, StoreItem
 from Model.towers import EnergyTower, JustTower, Fortress
 from Model.towers import LightTower
-from Model.wave import Gate
+from Model.warriors import SimpleWarrior, AdamantWarrior
+from Model.wave import Gate, Wave
 
 __author__ = 'umqra'
 

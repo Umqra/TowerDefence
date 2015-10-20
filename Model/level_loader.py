@@ -33,7 +33,7 @@ class Level1(LevelLoader):
         Model.warriors.random_walker = BFSWalker(game_state.map)
         g1 = Gate(game_state.map, Point(400, 100))
         g2 = Gate(game_state.map, Point(300, 100))
-        g3 = Gate(game_state.map, Point(350, 60))
+        g3 = Gate(game_state.map, Point(350, 40))
         game_state.map.add_gate(g1)
         game_state.map.add_gate(g2)
         game_state.map.add_gate(g3)

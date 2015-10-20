@@ -1,13 +1,12 @@
-from PyQt4.QtGui import QWidget, QGridLayout, QPushButton
+from PyQt4.QtGui import QWidget, QGridLayout
+
 from Model.map_cell import all_cells
-from View.control_panel_view import ControlPanelView
-from View.custom_button import CustomButton
-from View.custom_label import CustomLabel
-from View.info_panel_view import InfoPanelView
+from View.creator_control_panel_view import CreatorControlPanelView
+from PyQtExtension.custom_button import CustomButton
 from View.landscape_editor import LandscapeEditorView
 from View.map_creator_view import MapCreatorView
-from View.map_view import MapView
 from View.store_view import StoreView
+
 
 __author__ = 'umqra'
 
@@ -20,7 +19,7 @@ class CreatorView(QWidget):
 
         self.layout = QGridLayout()
 
-        #self.layout.addWidget(CreatorControlPanelView(self.model), 1, 0)
+        self.layout.addWidget(CreatorControlPanelView(self.model), 1, 2)
         self.layout.addWidget(MapCreatorView(self.model.map), 1, 1)
 
         self.switch_store_button = CustomButton("Store")
@@ -34,7 +33,6 @@ class CreatorView(QWidget):
         #self.layout.addWidget(CreatorInfoPanel(self.model), 1, 2)
         self.layout.setColumnStretch(2, 3)
         self.layout.setColumnStretch(0, 2)
-        self.layout.setColumnMinimumWidth(0, 200)
         self.layout.setRowStretch(3, 1)
         self.setLayout(self.layout)
 

@@ -1,6 +1,9 @@
 from enum import Enum
-from PyQt4.QtGui import QWidget, QPainter, QGridLayout, QLabel, QFontDatabase, QFont
-from View.custom_label import CustomLabel
+
+from PyQt4.QtGui import QWidget, QPainter, QGridLayout, QLabel
+
+from PyQtExtension.custom_label import CustomLabel
+
 
 __author__ = 'umqra'
 

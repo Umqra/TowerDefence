@@ -1,14 +1,12 @@
-import itertools
 from Controller.controller_events import MapControllerEvent
 from Model.events import *
-from View.custom_layout import CustomLayout
+from PyQtExtension.custom_layout import CustomLayout
 from View.gate_view import GateView
 from View.warrior_view import get_warrior_view
 
 __author__ = 'umqra'
 
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QWidget, QPainter, QColor, QGridLayout, QStackedLayout, QPen, QGraphicsScene
+from PyQt4.QtGui import QWidget
 from View.tower_view import get_tower_view
 from View.bullet_view import get_bullet_view
 from View.cells_view import LightView, CellsView

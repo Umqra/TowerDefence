@@ -1,4 +1,4 @@
-from PyQt4.QtGui import QWidget, QPainter, QColor
+from PyQt4.QtGui import QWidget, QPainter, QColor, QPen, QBrush
 
 __author__ = 'umqra'
 
@@ -12,6 +12,7 @@ class StaticObjectView(QWidget):
     def __init__(self, model):
         super().__init__()
         self.model = model
+        self.selected = False
 
     def paintEvent(self, QPaintEvent):
         if not self.model.is_alive:
@@ -45,3 +46,7 @@ class StaticObjectView(QWidget):
 
         if not self.model.is_valid_position_on_map():
             qp.fillRect(x_coord, y_coord, picture_width, picture_height, QColor.fromRgb(240, 110, 0, 110))
+        if hasattr(self.model, 'selected') and self.model.selected:
+            pen = QPen(QBrush(QColor.fromRgb(70, 50, 117)), 3)
+            qp.setPen(pen)
+            qp.drawRect(x_coord, y_coord, picture_width, picture_height)

@@ -1,4 +1,5 @@
 from PyQt4.QtGui import QWidget, QPixmap
+from Controller.controller_events import SelectItemControllerEvent
 from Infrastructure.get_resources import load_image
 from View.static_view import StaticObjectView
 

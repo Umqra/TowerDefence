@@ -157,6 +157,7 @@ class GameMap:
     def can_put_item(self, item):
         for cell in self.get_occupied_cells(item):
             if not cell.passable:
+                print("cant!!!!!")
                 return False
         if isinstance(item, Warrior):
             collided_objects = itertools.chain(self.warriors, self.towers)
@@ -164,6 +165,8 @@ class GameMap:
             collided_objects = itertools.chain(self.warriors, self.towers, self.gates)
         for map_item in collided_objects:
             if map_item != item and item.shape.intersects_with_polygon(map_item.shape):
+                print("cant!!!")
+                print(map_item)
                 return False
         return True
 
@@ -263,6 +266,12 @@ class GameMap:
         row = x // MapCell.cell_size
         col = y // MapCell.cell_size
         return self.map[row][col].items
+
+    def get_item_contained_position(self, x, y):
+        for item in itertools.chain(self.towers, self.gates):
+            if item.shape.contain_point(Point(x, y)):
+                return item
+        return None
 
     def add_preview_item(self, preview_item):
         self.process_events([CreatePreviewEvent(preview_item)])

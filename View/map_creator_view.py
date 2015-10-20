@@ -1,4 +1,6 @@
 from PyQt4.QtGui import QWidget
+from PyQt4 import QtCore
+
 from Controller.controller_events import MapCreatorControllerEvent
 from Infrastructure.pyqt_helpers import clear_layout
 from Model.events import CreatePreviewEvent, CreateEvent, DeletePreviewEvent
@@ -6,10 +8,10 @@ from Model.events import CreateTowerEvent
 from Model.towers import Tower
 from Model.wave import Gate
 from View.cells_view import LightView, CellsView
-from View.custom_layout import CustomLayout
+from PyQtExtension.custom_layout import CustomLayout
 from View.gate_view import GateView
 from View.tower_view import get_tower_view
-from PyQt4 import QtGui, QtCore
+
 
 __author__ = 'umqra'
 

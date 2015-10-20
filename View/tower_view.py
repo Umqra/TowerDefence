@@ -1,12 +1,10 @@
-from Infrastructure.get_resources import get_default_image, load_image
-from View.loader_widget import LoaderWidget, LoaderType
+from Infrastructure.get_resources import load_image
 from View.static_view import StaticObjectView
 
 __author__ = 'umqra'
 
 from Model.towers import EnergyTower, LightTower, JustTower, Fortress
-from PyQt4.QtGui import QWidget, QPainter, QPixmap, QImage, QColor, QGridLayout, QLabel
-from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QPixmap
 
 
 def get_tower_view(tower):

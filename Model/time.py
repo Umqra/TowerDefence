@@ -52,6 +52,9 @@ class Time:
                     m * Time._seconds +
                     s)
 
+    def __str__(self):
+        return "{} day. {}:{}:{}".format(self.day, self.hour, self.minutes, self.seconds)
+
     def __eq__(self, other):
         return (self.day, self.value) == (other.day, other.value)
 

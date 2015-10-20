@@ -1,6 +1,7 @@
 from PyQt4.QtGui import QWidget, QGridLayout, QColor
-from Model.time import Time
-from View.loader_widget import LoaderWidget, LoaderStyle, LoaderType
+
+from PyQtExtension.loader_widget import LoaderWidget, LoaderStyle, LoaderType
+
 
 __author__ = 'umqra'
 
@@ -43,13 +44,13 @@ class InfoPanelView(QWidget):
                                                        QColor.fromRgb(255, 77, 0),
                                                        QColor.fromRgb(0, 0, 0))),
                               4, 0)
-
         self.layout.addWidget(LoaderWidget(lambda: self.state.money, 0, 1000,
                                            LoaderStyle(LoaderType.TextOnly, 60, "Money",
                                                        QColor.fromRgb(255, 255, 255),
                                                        QColor.fromRgb(243, 218, 11),
                                                        QColor.fromRgb(0, 0, 0))),
                               5, 0)
+
 
         self.layout.setRowStretch(6, 1)
         self.setLayout(self.layout)

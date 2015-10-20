@@ -1,29 +1,12 @@
-from PyQt4 import QtGui
 from Controller.creator_controller import CreatorController
 from Gui import start_gui
 from Infrastructure.pyqt_helpers import clear_layout
 from View.creator_view import CreatorView
 
 __author__ = 'umqra'
-from datetime import datetime
-from PyQt4.QtGui import QColor, QPixmap, QImage, QGridLayout, QApplication
-from PyQt4.QtCore import QPointF
-import math
-from Geometry.line import Line
-from Geometry.point import Point
-from Geometry.polygon import Polygon
-from Geometry.segment import Segment
-from Model.game_fraction import GameFraction
-from Model.game_map import GameMap
+from PyQt4.QtGui import QGridLayout
 from Model.game_state import GameState
-from Model.level_loader import Level1
-from Model.light import LightImpulse
-from Model.towers import EnergyTower, SimpleChooser
-from View.bullet_view import EnergyBulletView
-from View.loader_widget import LoaderWidget
-from View.map_view import MapView
 from View.state_view import StateView
-from View.tower_view import EnergyTowerView
 from PyQt4 import QtGui, QtCore
 
 
@@ -43,7 +26,6 @@ class Game(QtGui.QWidget):
 
         self.timer = QtCore.QBasicTimer()
         self.timer.start(Game.interval, self)
-
 
     def load_level(self, level_loader):
         self.reset_game()

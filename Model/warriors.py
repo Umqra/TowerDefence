@@ -11,7 +11,6 @@ from Model.map_cell import MapCell
 
 __author__ = 'umqra'
 
-
 class Warrior:
     def __init__(self, shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
         self.shape = shape
@@ -232,3 +231,5 @@ class AdamantWarrior(Warrior):
             direction = Point(-1, 1)
         # (shape, manipulator, fraction, health, speed, damage, damage_radius, direction):
         super().__init__(shape, random_walker, GameFraction.Dark, 200, 50, 0.5, 35, direction)
+
+list_warriors = [SimpleWarrior, AdamantWarrior]

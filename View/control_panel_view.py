@@ -1,6 +1,8 @@
-from PyQt4.QtGui import QWidget, QPushButton, QGridLayout
+from PyQt4.QtGui import QWidget, QGridLayout
+
 from Model.game_state import GameResult
-from View.custom_button import CustomButton
+from PyQtExtension.custom_button import CustomButton
+
 
 __author__ = 'umqra'
 

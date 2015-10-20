@@ -1,9 +1,11 @@
 from PyQt4.QtGui import QWidget, QGridLayout
+
 from View.control_panel_view import ControlPanelView
-from View.custom_label import CustomLabel
+from PyQtExtension.custom_label import CustomLabel
 from View.info_panel_view import InfoPanelView
 from View.map_view import MapView
 from View.store_view import StoreView
+
 
 __author__ = 'umqra'
 

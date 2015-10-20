@@ -53,6 +53,15 @@ class Tower:
 
         self.selected = False
 
+    def select(self):
+        self.selected = True
+
+    def unselect(self):
+        self.selected = False
+
+    def switch(self):
+        self.selected = not self.selected
+
     def move_to(self, destination):
         direction = destination - self.shape.get_center_of_mass()
         self.shape.move(direction)

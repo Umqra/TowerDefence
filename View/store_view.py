@@ -1,15 +1,14 @@
-from PyQt4.QtCore import Qt
 from PyQt4 import QtCore
-from PyQt4.QtGui import QWidget, QGridLayout, QPainter, QPixmap, QPushButton, QLabel, QScrollArea, QHBoxLayout
-from Model.bullets import Bullet
-from Model.towers import Tower, EnergyTower, LightTower, JustTower, Fortress
-from Model.wave import Gate
-from View.bullet_view import get_bullet_view
-from View.custom_label import CustomLabel
-from View.gate_view import GateView
-from View.tower_view import get_tower_view, EnergyTowerView, LightTowerView, JustTowerView, FortressView
+from PyQt4.QtGui import QWidget, QGridLayout, QPixmap, QLabel, QScrollArea, QHBoxLayout
 
+from PyQt4.QtCore import Qt
+from Model.towers import EnergyTower, LightTower, JustTower, Fortress
+from Model.wave import Gate
+from PyQtExtension.custom_label import CustomLabel
+from View.gate_view import GateView
+from View.tower_view import EnergyTowerView, LightTowerView, JustTowerView, FortressView
 from Controller.controller_events import StoreControllerEvent
+
 
 __author__ = 'umqra'
 
