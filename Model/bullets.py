@@ -32,7 +32,8 @@ class Bullet:
         self.occupied_cells.clear()
 
     def tick(self, dt):
-        if not self.is_alive:
+        if not self.is_alive or not self.occupied_cells:
+            print('delete bullet')
             return [DeleteBulletEvent(self)]
         if self.target is not None and not self.target.is_alive:
             self.target = None
@@ -57,6 +58,7 @@ class Bullet:
 
 class EnergyBullet(Bullet):
     bounding_box = 25
+
     def __init__(self, position, target, fraction, damage):
         shape = Geometry.geometry_operations.get_right_polygon(position, EnergyBullet.bounding_box / 2, 6)
         super().__init__(shape, target, fraction, damage, 100)

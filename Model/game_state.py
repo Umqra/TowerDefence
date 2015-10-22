@@ -5,6 +5,7 @@ from Geometry.point import Point
 from Model import level_loader
 from Model.game_map import GameMap
 from Model.game_result import GameResult
+from Model.level_loader import is_last_level
 from Model.store import Store, StoreItem
 from Model.towers import EnergyTower, JustTower, Fortress
 from Model.towers import LightTower
@@ -47,6 +48,8 @@ class GameState:
         self.game.load_level(self.loader)
 
     def next_level(self):
+        if is_last_level(self):
+            return
         current_level_id = self.loader.level_id
         next_level_id = None
         if current_level_id in level_loader.bonus_levels.keys():
@@ -125,11 +128,11 @@ class GameState:
         self.map.initialize_empty_map()
 
         self.store = Store([
-            StoreItem("Башенка", EnergyTower, 0,
+            StoreItem("Башенка", EnergyTower, 50,
                       "Башенка - удивительное оружие света, которое защитит вас от любого типа монстров"),
-            StoreItem("Светилышко", LightTower, 0,
+            StoreItem("Светилышко", LightTower, 100,
                       "Светилышко - это чудо! Не упускай момента чтобы купить 'Светилышко'!"),
-            StoreItem("Просто башня", JustTower, 0,
+            StoreItem("Просто башня", JustTower, 10,
                       "Ты нищеброд и у тебя не хватает денег даже на Башенку?! Бери 'Просто башню'! Пусть постоит"),
             StoreItem("Врата ада", Gate, 0,
                       "Из этих ворот вылезают создания тьмы"),

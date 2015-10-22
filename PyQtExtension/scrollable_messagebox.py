@@ -8,6 +8,7 @@ class ScrollableMessageBox(QMessageBox):
     def __init__(self, *__args):
         super().__init__(*__args)
         self.container = QLabel()
+        self.container.setWordWrap(True)
         self.scroller = QScrollArea()
         self.scroller.setMinimumHeight(400)
         self.scroller.setMinimumWidth(500)

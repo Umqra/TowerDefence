@@ -59,6 +59,16 @@ images = {
     "GC": load_image('GC.png', 50),
     "GD": load_image('GD.png', 50),
 
+    "GE": load_image('GE.png', 50),
+    "GF": load_image('GF.png', 50),
+    "GG": load_image('GG.png', 50),
+    "GH": load_image('GH.png', 50),
+
+    "GI": load_image('GI.png', 50),
+    "GJ": load_image('GJ.png', 50),
+    "GK": load_image('GK.png', 50),
+    "GL": load_image('GL.png', 50),
+
     "R1": load_image('R1.png', 50),
 }
 

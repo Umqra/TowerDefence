@@ -5,14 +5,14 @@ from Controller.creator_controller import CreatorController
 from Controller.main_controller import MainController
 from Gui import start_gui
 from Infrastructure.pyqt_helpers import clear_layout
-from Model.level_loader import Level1, Level2, load_level_from_file, get_level_loader, levels
+from Model.level_loader import load_level_from_file, get_level_loader, levels
 from Model.time import Time
 from Model.warriors import BFSWalker
 from PyQtExtension.scrollable_messagebox import ScrollableMessageBox
 from View.creator_view import CreatorView
 
 __author__ = 'umqra'
-from PyQt4.QtGui import QGridLayout, QMenuBar, QVBoxLayout, QMenu, QShortcut, QKeySequence, QMessageBox
+from PyQt4.QtGui import QGridLayout, QMenuBar, QVBoxLayout, QMenu, QShortcut, QKeySequence, QMessageBox, QFileDialog
 from Model.game_state import GameState
 from View.state_view import StateView
 from PyQt4 import QtGui, QtCore
@@ -53,12 +53,17 @@ class Game(QtGui.QWidget):
         help_menu.addAction("About", self.show_about)
 
         game_menu.addAction('Create level', self.load_level_creator)
+        game_menu.addAction('Load from file', self.load_level_from_file_dialog)
         game_menu.addAction('Start game', lambda: self.load_level(self.last_level))
         game_menu.addAction('Pause game', lambda: self.state.stop())
         game_menu.addAction('Run game', lambda: self.state.resume())
         game_menu.addAction('Exit', lambda: self.close())
 
         self.layout.setRowMinimumHeight(0, 20)
+
+    def load_level_from_file_dialog(self):
+        file_name = QFileDialog().getOpenFileName(self, 'Load level', '~')
+        self.load_level_from_file(file_name)
 
     def show_about(self):
         about = QMessageBox.about(self, 'About game', 'Tower defence\nUrFU 2015')
@@ -73,7 +78,7 @@ class Game(QtGui.QWidget):
                 help_info = 'Markdown unavailable.\nYou can install it with command: pip install markdown\n' + help_info
         x = ScrollableMessageBox(self)
         x.setText(help_info)
-        x.setWindowTitle('2')
+        x.setWindowTitle('Help')
         x.show()
         # help = QMessageBox.about(self, 'Help', help_info)
 
