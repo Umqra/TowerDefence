@@ -104,6 +104,7 @@ class GameMap:
         for x in range(self.height):
             self.map[x] = [create_cell(self.state, x, y, 'G') for y in range(self.width)]
         self.assign_cell_types()
+        self.set_adjacent()
 
     def _get_cell_view_repr(self, x, y):
         if x < 0 or y < 0 or x >= self.height or y >= self.width:
@@ -124,6 +125,7 @@ class GameMap:
         self.map[x][y] = create_cell(self.state, x, y, t)
         print(t, self.map[x][y])
         self.assign_cell_types()
+        self.set_adjacent()
         self.update_views()
 
     def set_adjacent(self):
@@ -157,7 +159,6 @@ class GameMap:
     def can_put_item(self, item):
         for cell in self.get_occupied_cells(item):
             if not cell.passable:
-                print("cant!!!!!")
                 return False
         if isinstance(item, Warrior):
             collided_objects = itertools.chain(self.warriors, self.towers)
@@ -165,8 +166,6 @@ class GameMap:
             collided_objects = itertools.chain(self.warriors, self.towers, self.gates)
         for map_item in collided_objects:
             if map_item != item and item.shape.intersects_with_polygon(map_item.shape):
-                print("cant!!!")
-                print(map_item)
                 return False
         return True
 
@@ -289,3 +288,11 @@ class GameMap:
             print("")
         for view in self.views:
             view.update()
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state['views'] = []
+        state['controller'] = None
+        state['events'] = []
+        state['preview_items'] = []
+        return state

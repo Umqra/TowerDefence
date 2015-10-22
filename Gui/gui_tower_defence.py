@@ -1,10 +1,16 @@
+import jsonpickle
+import pickle
 from Controller.creator_controller import CreatorController
+from Controller.main_controller import MainController
 from Gui import start_gui
 from Infrastructure.pyqt_helpers import clear_layout
+from Model.level_loader import Level1, Level2, load_level_from_file, get_level_loader, levels
+from Model.time import Time
+from Model.warriors import BFSWalker
 from View.creator_view import CreatorView
 
 __author__ = 'umqra'
-from PyQt4.QtGui import QGridLayout
+from PyQt4.QtGui import QGridLayout, QMenuBar, QVBoxLayout, QMenu, QShortcut, QKeySequence
 from Model.game_state import GameState
 from View.state_view import StateView
 from PyQt4 import QtGui, QtCore
@@ -17,17 +23,38 @@ class Game(QtGui.QWidget):
     def __init__(self):
         super().__init__()
         self.setFixedSize(1000, 800)
-        self.layout = QGridLayout()
+        self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         self.state = None
         self.state_view = None
-        # self.load_level(Level1)
-        self.load_level_creator()
+        # self.load_level_from_file('level_1.tdl')
+        self.last_level = levels[0]
+        self.load_level(levels[0])
+
+        # self.load_level_creator()
 
         self.timer = QtCore.QBasicTimer()
         self.timer.start(Game.interval, self)
 
+        menu_bar = QMenuBar(self)
+        game_menu = menu_bar.addMenu("Game")
+        game_menu.addAction('Create level', self.load_level_creator,
+                            QKeySequence("Ctrl+N"))
+        game_menu.addAction('Start game', lambda: self.load_level(self.last_level),
+                            QKeySequence("Ctrl+R"))
+        game_menu.addAction('Pause game', lambda: self.state.stop(), QKeySequence("Ctrl+P"))
+        game_menu.addAction('Run game', lambda: self.state.resume(), QKeySequence("Ctrl+O"))
+
+    def load_level_from_file(self, file_name):
+        self.reset_game()
+        self.state = load_level_from_file(file_name)
+        self.state_view = StateView(self.state)
+        self.layout.addWidget(self.state_view)
+
+        self.setMouseTracking(True)
+
     def load_level(self, level_loader):
+        self.last_level = level_loader
         self.reset_game()
         self.state = GameState(self)
         self.state.initialize_with_loader(level_loader)

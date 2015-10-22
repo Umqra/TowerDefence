@@ -20,6 +20,10 @@ class Store:
             item.set_controller(controller)
         self.controller = controller
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state['controller'] = None
+        return state
 
 class StoreItem:
     def __init__(self, title, item_type, cost, description):
@@ -32,3 +36,8 @@ class StoreItem:
 
     def set_controller(self, controller):
         self.controller = controller
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state['controller'] = None
+        return state

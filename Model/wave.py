@@ -96,5 +96,6 @@ class Wave:
                     self.warriors.remove(creator)
                     return
 
-
-
+    def __getstate__(self):
+        print(self.gates)
+        return self.__dict__.copy()

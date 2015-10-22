@@ -1,4 +1,5 @@
 from PyQt4.QtGui import QWidget, QGridLayout, QColor
+from PyQt4 import QtCore
 
 from PyQtExtension.loader_widget import LoaderWidget, LoaderStyle, LoaderType
 

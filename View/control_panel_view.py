@@ -32,10 +32,10 @@ class ControlPanelView(QWidget):
 
     def pause_button_clicked(self):
         if self.model.pause:
-            self.model.pause = False
+            self.model.resume()
             self.pause_button.setText("Pause")
         else:
-            self.model.pause = True
+            self.model.stop()
             self.pause_button.setText("Start")
 
     def restart_button_clicked(self):

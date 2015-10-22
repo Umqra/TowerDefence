@@ -37,11 +37,31 @@ class GameState:
         self.notification_creator = None
         self.pause = False
 
+    def stop(self):
+        self.pause = True
+
+    def resume(self):
+        self.pause = False
+
     def restart(self):
         self.game.load_level(self.loader)
 
     def next_level(self):
-        self.game.load_level(level_loader.levels[self.loader.level_id + 1])
+        current_level_id = self.loader.level_id
+        next_level_id = None
+        if current_level_id in level_loader.bonus_levels.keys():
+            rule = level_loader.bonus_rules[current_level_id]
+            if rule(self):
+                next_level_id = level_loader.bonus_levels[current_level_id]
+        else:
+            try:
+                next_level_id = level_loader.next_level[self.loader.level_id]
+            except:
+                return
+        if next_level_id is None:
+            return
+        new_level_loader = list(filter(lambda x: x.level_id == next_level_id, level_loader.levels))[0]
+        self.game.load_level(new_level_loader)
 
     def push_notification(self, text):
         self.notification = text
@@ -82,6 +102,7 @@ class GameState:
 
     def initialize_with_loader(self, loader):
         self.loader = loader
+        self.notification = loader.level_id
         loader.init_game(self)
 
     def set_controller(self, controller):
@@ -99,6 +120,7 @@ class GameState:
         return True
 
     def initialize_empty_level(self):
+        self.time = Time.fromDHMS(0, 12, 0, 0)
         self.map = GameMap(10, 10, self)
         self.map.initialize_empty_map()
 
@@ -114,3 +136,12 @@ class GameState:
             StoreItem("Замок света", Fortress, 0,
                       "Защити башню света - спаси мир от беспроглядной тьмы!")
         ])
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state['views'] = []
+        state['game'] = None
+        state['controller'] = None
+        state['pause'] = False
+        state['store'] = None
+        return state
